@@ -1,6 +1,7 @@
-import { auth, db } from './firebase-config.js';
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { db } from './firebase-config.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+console.log("main.js foi carregado com sucesso.");
 
 const sweetsContainer = document.getElementById('sweets-container');
 const searchName = document.getElementById('search-by-name');
@@ -22,7 +23,7 @@ function addToCart(sweetId) {
     const quantityInput = document.getElementById(`quantity-${sweetId}`);
     const quantity = parseInt(quantityInput.value, 10);
 
-    if (quantity <= 0) {
+    if (isNaN(quantity) || quantity <= 0) {
         alert("Por favor, insira uma quantidade válida.");
         return;
     }
@@ -87,11 +88,16 @@ function renderSweets(sweets) {
 }
 
 async function fetchSweets() {
-    const sweetsCollection = collection(db, 'sweets');
-    const sweetsSnapshot = await getDocs(sweetsCollection);
-    allSweets = sweetsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderSweets(allSweets);
-    populateCategories();
+    try {
+        const sweetsCollection = collection(db, 'sweets');
+        const sweetsSnapshot = await getDocs(sweetsCollection);
+        allSweets = sweetsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderSweets(allSweets);
+        populateCategories();
+    } catch (error) {
+        console.error("Erro ao buscar os doces:", error);
+        sweetsContainer.innerHTML = '<p>Ocorreu um erro ao carregar os produtos. Verifique o console para mais detalhes.</p>';
+    }
 }
 
 function populateCategories() {
@@ -125,35 +131,6 @@ searchCategory.addEventListener('change', applyFilters);
 searchPrice.addEventListener('input', () => {
     priceValue.textContent = searchPrice.value;
     applyFilters();
-});
-
-const loginLink = document.getElementById('login-link');
-const logoutLink = document.getElementById('logout-link');
-const adminLink = document.getElementById('admin-link');
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        loginLink.style.display = 'none';
-        logoutLink.style.display = 'block';
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().role === 'admin') {
-            adminLink.style.display = 'block';
-        }
-    } else {
-        loginLink.style.display = 'block';
-        logoutLink.style.display = 'none';
-        adminLink.style.display = 'none';
-    }
-});
-
-logoutLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    signOut(auth).then(() => {
-        alert("Você foi desconectado.");
-        window.location.reload();
-    }).catch((error) => {
-        console.error("Erro ao sair:", error);
-    });
 });
 
 fetchSweets();

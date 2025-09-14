@@ -106,6 +106,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
+input[type="tel"]
 textarea,
 select {
     width: 100%;
@@ -574,3 +575,4 @@ button:hover {
 .tab-content.active {
     display: flex;
 }
+

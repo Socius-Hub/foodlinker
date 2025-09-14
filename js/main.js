@@ -19,6 +19,14 @@ function saveCart(cart) {
 }
 
 function addToCart(sweetId) {
+    const quantityInput = document.getElementById(`quantity-${sweetId}`);
+    const quantity = parseInt(quantityInput.value, 10);
+
+    if (quantity <= 0) {
+        alert("Por favor, insira uma quantidade válida.");
+        return;
+    }
+
     const sweet = allSweets.find(s => s.id === sweetId);
     if (!sweet) return;
 
@@ -26,20 +34,29 @@ function addToCart(sweetId) {
     const existingItem = cart.find(item => item.id === sweetId);
 
     if (existingItem) {
-        existingItem.quantity++;
+        existingItem.quantity += quantity;
     } else {
         cart.push({
             id: sweet.id,
             name: sweet.name,
             price: sweet.price,
-            quantity: 1
+            quantity: quantity
         });
     }
     saveCart(cart);
-    alert(`${sweet.name} foi adicionado ao carrinho!`);
+    alert(`${quantity}x ${sweet.name} foi adicionado ao carrinho!`);
+    quantityInput.value = 1;
 }
 
-window.addToCart = addToCart;
+function addEventListenersToButtons() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const sweetId = button.dataset.id;
+            addToCart(sweetId);
+        });
+    });
+}
 
 function renderSweets(sweets) {
     sweetsContainer.innerHTML = '';
@@ -54,13 +71,19 @@ function renderSweets(sweets) {
             <img src="${sweet.imageUrl}" alt="${sweet.name}">
             <h3>${sweet.name}</h3>
             <p>${sweet.description}</p>
+            <p class="price">R$ ${sweet.price.toFixed(2)}</p>
             <div class="card-footer">
-                <p class="price">R$ ${sweet.price.toFixed(2)}</p>
-                <button onclick="addToCart('${sweet.id}')">Adicionar ao Carrinho</button>
+                <div class="quantity-selector">
+                    <label for="quantity-${sweet.id}">Qtd:</label>
+                    <input type="number" id="quantity-${sweet.id}" value="1" min="1">
+                </div>
+                <button class="add-to-cart-btn" data-id="${sweet.id}">Adicionar</button>
             </div>
         `;
         sweetsContainer.appendChild(sweetElement);
     });
+
+    addEventListenersToButtons();
 }
 
 async function fetchSweets() {

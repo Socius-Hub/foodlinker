@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { collection, getDocs, query, where, getDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const sweetsContainer = document.getElementById('sweets-container');
 const searchName = document.getElementById('search-by-name');
@@ -8,7 +8,7 @@ const searchCategory = document.getElementById('search-by-category');
 const searchPrice = document.getElementById('search-by-price');
 const priceValue = document.getElementById('price-value');
 
-let allSweets = []; 
+let allSweets = [];
 
 function renderSweets(sweets) {
     sweetsContainer.innerHTML = '';
@@ -39,6 +39,7 @@ async function fetchSweets() {
 
 function populateCategories() {
     const categories = [...new Set(allSweets.map(sweet => sweet.category))];
+    searchCategory.innerHTML = '<option value="">Todas as Categorias</option>';
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
@@ -72,11 +73,13 @@ searchPrice.addEventListener('input', () => {
 const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const adminLink = document.getElementById('admin-link');
+const ordersLink = document.getElementById('orders-link');
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         loginLink.style.display = 'none';
         logoutLink.style.display = 'block';
+        ordersLink.style.display = 'block';
 
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists() && userDoc.data().role === 'admin') {
@@ -86,6 +89,7 @@ onAuthStateChanged(auth, async (user) => {
         loginLink.style.display = 'block';
         logoutLink.style.display = 'none';
         adminLink.style.display = 'none';
+        ordersLink.style.display = 'none';
     }
 });
 
@@ -93,36 +97,10 @@ logoutLink.addEventListener('click', (e) => {
     e.preventDefault();
     signOut(auth).then(() => {
         alert("Você foi desconectado.");
+        window.location.reload();
     }).catch((error) => {
         console.error("Erro ao sair:", error);
     });
 });
 
 fetchSweets();
-
-const contactForm = document.getElementById('contact-form');
-if(contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const message = document.getElementById('contact-message').value;
-        const user = auth.currentUser;
-
-        if (!user) {
-            alert("Você precisa estar logado para enviar uma mensagem.");
-            return;
-        }
-
-        try {
-            await addDoc(collection(db, "contactForms"), {
-                userId: user.uid,
-                userEmail: user.email,
-                message: message,
-                timestamp: new Date()
-            });
-            alert("Mensagem enviada com sucesso!");
-            contactForm.reset();
-        } catch (error) {
-            console.error("Erro ao enviar mensagem: ", error);
-        }
-    });
-}

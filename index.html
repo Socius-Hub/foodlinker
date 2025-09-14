@@ -10,6 +10,7 @@
     <header>
         <h1>Nossos Doces</h1>
         <nav>
+            <a href="orders.html" id="orders-link" style="display:none;">Fazer Pedido</a>
             <a href="login.html" id="login-link">Login</a>
             <a href="#" id="logout-link" style="display:none;">Sair</a>
             <a href="admin.html" id="admin-link" style="display:none;">Painel Admin</a>
@@ -21,13 +22,13 @@
             <input type="text" id="search-by-name" placeholder="Buscar por nome...">
             <select id="search-by-category">
                 <option value="">Todas as Categorias</option>
-                </select>
+            </select>
             <input type="range" id="search-by-price" min="0" max="50" value="50">
             <span>Preço máximo: R$ <span id="price-value">50</span></span>
         </section>
 
         <section id="sweets-container">
-            </section>
+        </section>
     </main>
 
     <footer>
@@ -37,6 +38,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
+    <script src="js/firebase-config.js" type="module"></script>
     <script src="js/main.js" type="module"></script>
 </body>
 </html>

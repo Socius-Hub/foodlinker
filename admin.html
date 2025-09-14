@@ -14,23 +14,32 @@
         </nav>
     </header>
     <main id="admin-panel" style="display: none;">
-        <h2>Adicionar Novo Doce</h2>
-        <form id="add-sweet-form">
-            <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
-            <textarea id="sweet-description" placeholder="Descrição"></textarea>
-            <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
-            <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
-            
-            <label for="sweet-image-select">Imagem do Doce:</label>
-            <select id="sweet-image-select" required>
-                <option value="">-- Selecione uma imagem --</option>
-                </select>
-            
-            <button type="submit">Adicionar Doce</button>
-        </form>
+        <section>
+            <h2>Adicionar Novo Doce</h2>
+            <form id="add-sweet-form">
+                <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
+                <textarea id="sweet-description" placeholder="Descrição"></textarea>
+                <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
+                <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
 
-        <h2>Doces Cadastrados</h2>
-        <div id="sweets-list-admin"></div>
+                <label for="sweet-image-select">Imagem do Doce:</label>
+                <select id="sweet-image-select" required>
+                    <option value="">-- Selecione uma imagem --</option>
+                </select>
+
+                <button type="submit">Adicionar Doce</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Usuários Cadastrados</h2>
+            <div id="users-list-admin"></div>
+        </section>
+
+        <section>
+            <h2>Pedidos Recebidos</h2>
+            <div id="orders-list-admin"></div>
+        </section>
     </main>
     <p id="loading-message">Verificando permissões...</p>
 

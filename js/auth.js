@@ -15,6 +15,13 @@ if (registerButton) {
     registerButton.addEventListener('click', async () => {
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
+        const fullName = document.getElementById('register-fullname').value;
+        const phone = document.getElementById('register-phone').value;
+
+        if (!fullName || !phone) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -22,6 +29,8 @@ if (registerButton) {
 
             await setDoc(doc(db, "users", user.uid), {
                 email: user.email,
+                fullName: fullName,
+                phone: phone,
                 role: "user"
             });
 
@@ -33,8 +42,6 @@ if (registerButton) {
             alert("Falha no cadastro: " + error.message);
         }
     });
-} else {
-    console.error("Erro de inicialização: Botão 'register-button' não encontrado no HTML.");
 }
 
 if (loginButton) {
@@ -51,8 +58,6 @@ if (loginButton) {
             alert("Falha no login: " + error.message);
         }
     });
-} else {
-    console.error("Erro de inicialização: Botão 'login-button' não encontrado no HTML.");
 }
 
 if (googleLoginButton) {
@@ -64,7 +69,7 @@ if (googleLoginButton) {
 
             await setDoc(doc(db, "users", user.uid), {
                 email: user.email,
-                displayName: user.displayName,
+                fullName: user.displayName,
                 role: "user"
             }, { merge: true });
 
@@ -75,6 +80,4 @@ if (googleLoginButton) {
             alert("Falha no login com Google: " + error.message);
         }
     });
-} else {
-    console.error("Erro de inicialização: Botão 'google-login-button' não encontrado no HTML.");
 }

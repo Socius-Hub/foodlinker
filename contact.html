@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Oishii Sobremesas</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/contact.css">
+</head>
+<body>
+    <header>
+        <h1>Entre em Contato</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/products">Cardápio</a>
+            <a href="/contact.html">Contato</a> <a href="/cart" id="cart-link">Carrinho</a>
+            <a href="/login" id="login-link">Login</a>
+            <a href="/admin" id="admin-link" style="display:none;">Administrar</a>
+            <a href="#" id="logout-link" style="display:none;">Sair</a>
+        </nav>
+    </header>
+    <main>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h2>ENTRE EM CONTATO</h2>
+                <p>Pelo Telefone <span class="phone-number">(11)93940-9050</span></p>
+                <p>Pelo Grupo Vip <a href="chat.whatsapp.com/BjQZcEUeVE5lf5iVHusG">WhatsApp</a></p>
+                <p>Sem loja física no momento.</p>
+                <div class="info-item">
+                    <p><strong>Próximo evento:</strong> Ritmei Idols Fest<br>07/09</p>
+                </div>
+            </div>
+            <div class="contact-form-container">
+                <form id="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstname">Primeiro nome*</label>
+                            <input type="text" id="firstname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Último nome*</label>
+                            <input type="text" id="lastname" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail*</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mensagem*</label>
+                        <textarea id="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit">ENVIAR</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Oishii Sobremesas Japonesas</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
+    <script src="js/firebase-config.js" type="module"></script>
+    <script src="js/contact.js" type="module"></script>
+</body>
+</html>

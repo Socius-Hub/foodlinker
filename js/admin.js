@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { doc, getDoc, addDoc, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { doc, getDoc, addDoc, collection, getDocs, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const availableImages = ["Mochi.png", "Taiyaki.png"];
 
@@ -9,6 +9,7 @@ const loadingMessage = document.getElementById('loading-message');
 const imageSelect = document.getElementById('sweet-image-select');
 const usersListAdmin = document.getElementById('users-list-admin');
 const ordersListAdmin = document.getElementById('orders-list-admin');
+const contactsListAdmin = document.getElementById('contacts-list-admin'); // Novo
 const addSweetForm = document.getElementById('add-sweet-form');
 const tabs = document.querySelectorAll('.tab-button');
 const tabContents = document.querySelectorAll('.tab-content');
@@ -57,25 +58,69 @@ async function fetchUsers() {
     });
 }
 
+async function updateOrderStatus(orderId, newStatus) {
+    const orderRef = doc(db, "orders", orderId);
+    try {
+        await updateDoc(orderRef, {
+            status: newStatus
+        });
+        alert(`Status do pedido ${orderId} atualizado para ${newStatus}`);
+    } catch (error) {
+        console.error("Erro ao atualizar status do pedido: ", error);
+        alert("Falha ao atualizar o status.");
+    }
+}
+
+window.updateOrderStatus = updateOrderStatus;
+
 async function fetchOrders() {
     const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
     const ordersSnapshot = await getDocs(q);
     ordersListAdmin.innerHTML = '';
     ordersSnapshot.forEach(doc => {
         const order = doc.data();
+        const orderId = doc.id;
         const orderElement = document.createElement('div');
         orderElement.classList.add('order-item');
         let itemsHtml = order.items.map(item => `<li>${item.quantity}x ${item.name}</li>`).join('');
+        
+        const statusOptions = ['Pendente', 'Em produção', 'Concluído']
+            .map(status => `<option value="${status}" ${order.status === status ? 'selected' : ''}>${status}</option>`)
+            .join('');
+
         orderElement.innerHTML = `
             <h4>Pedido de: ${order.userEmail}</h4>
             <p><strong>Data:</strong> ${new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
             <p><strong>Total:</strong> R$ ${order.totalPrice.toFixed(2)}</p>
-            <p><strong>Status:</strong> ${order.status}</p>
+            <div class="status-updater">
+                <label for="status-${orderId}"><strong>Status:</strong></label>
+                <select id="status-${orderId}" onchange="updateOrderStatus('${orderId}', this.value)">
+                    ${statusOptions}
+                </select>
+            </div>
             <ul>${itemsHtml}</ul>
         `;
         ordersListAdmin.appendChild(orderElement);
     });
 }
+
+async function fetchContacts() {
+    const q = query(collection(db, "contacts"), orderBy("createdAt", "desc"));
+    const contactsSnapshot = await getDocs(q);
+    contactsListAdmin.innerHTML = '';
+    contactsSnapshot.forEach(doc => {
+        const contact = doc.data();
+        const contactElement = document.createElement('div');
+        contactElement.classList.add('user-item'); // Reutilizando a classe
+        contactElement.innerHTML = `
+            <p><strong>De:</strong> ${contact.firstName} ${contact.lastName} (${contact.email})</p>
+            <p><strong>Data:</strong> ${new Date(contact.createdAt.seconds * 1000).toLocaleString()}</p>
+            <p><strong>Mensagem:</strong> ${contact.message}</p>
+        `;
+        contactsListAdmin.appendChild(contactElement);
+    });
+}
+
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -88,6 +133,7 @@ onAuthStateChanged(auth, async (user) => {
             setupTabs();
             fetchUsers();
             fetchOrders();
+            fetchContacts(); 
         } else {
             alert("Acesso negado. Você não é um administrador.");
             window.location.href = "index.html";

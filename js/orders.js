@@ -11,7 +11,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
     } else {
-        alert("Você precisa estar logado para fazer um pedido.");
+        alert("Você precisa estar logado para fazer uma encomenda.");
         window.location.href = "login.html";
     }
 });
@@ -76,7 +76,7 @@ orderForm.addEventListener('submit', async (e) => {
             status: "Pendente",
             createdAt: serverTimestamp()
         });
-        alert("Pedido realizado com sucesso!");
+        alert("Encomenda realizada com sucesso!");
         orderForm.reset();
         window.location.href = "index.html";
     } catch (error) {

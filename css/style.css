@@ -530,3 +530,47 @@ button:hover {
     color: var(--cor-primaria);
     font-weight: 700;
 }
+
+.auth-container {
+    background: var(--cor-branco);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--sombra-padrao);
+    max-width: 500px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-button {
+    flex-grow: 1;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #888;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    color: var(--cor-primaria);
+    border-bottom-color: var(--cor-primaria);
+}
+
+.tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 1rem; 
+}
+
+.tab-content.active {
+    display: flex;
+}

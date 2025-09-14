@@ -1,18 +1,20 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { doc, getDoc, addDoc, collection, getDocs, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-const availableImages = ["Mochi.png", "Taiyaki.png"];
+import { doc, getDoc, addDoc, collection, getDocs, query, orderBy, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const adminPanel = document.getElementById('admin-panel');
 const loadingMessage = document.getElementById('loading-message');
-const imageSelect = document.getElementById('sweet-image-select');
 const usersListAdmin = document.getElementById('users-list-admin');
 const ordersListAdmin = document.getElementById('orders-list-admin');
-const contactsListAdmin = document.getElementById('contacts-list-admin'); // Novo
+const contactsListAdmin = document.getElementById('contacts-list-admin');
 const addSweetForm = document.getElementById('add-sweet-form');
 const tabs = document.querySelectorAll('.tab-button');
 const tabContents = document.querySelectorAll('.tab-content');
+
+const sweetsListAdmin = document.getElementById('sweets-list-admin');
+const editSweetModal = document.getElementById('edit-sweet-modal');
+const editSweetForm = document.getElementById('edit-sweet-form');
+const cancelEditBtn = document.getElementById('cancel-edit');
 
 function setupTabs() {
     tabs.forEach(tab => {
@@ -31,15 +33,76 @@ function setupTabs() {
     });
 }
 
-function populateImageSelector() {
-    if (!imageSelect) return;
-    availableImages.forEach(imageName => {
-        const option = document.createElement('option');
-        option.value = imageName;
-        option.textContent = imageName;
-        imageSelect.appendChild(option);
+async function fetchAndRenderSweets() {
+    const sweetsCollection = collection(db, 'sweets');
+    const sweetsSnapshot = await getDocs(sweetsCollection);
+    sweetsListAdmin.innerHTML = ''; 
+
+    sweetsSnapshot.forEach(doc => {
+        const sweet = { id: doc.id, ...doc.data() };
+        const sweetElement = document.createElement('div');
+        sweetElement.classList.add('sweet-item-admin');
+        sweetElement.innerHTML = `
+            <p><strong>${sweet.name}</strong> - R$ ${sweet.price.toFixed(2)}</p>
+            <div>
+                <button class="edit-btn">Editar</button>
+                <button class="delete-btn">Excluir</button>
+            </div>
+        `;
+
+        sweetElement.querySelector('.delete-btn').addEventListener('click', async () => {
+            if (confirm(`Tem certeza que deseja excluir o doce "${sweet.name}"?`)) {
+                try {
+                    await deleteDoc(doc(db, "sweets", sweet.id));
+                    alert("Doce excluído com sucesso!");
+                    fetchAndRenderSweets(); // Atualiza a lista
+                } catch (error) {
+                    console.error("Erro ao excluir doce: ", error);
+                    alert("Falha ao excluir o doce.");
+                }
+            }
+        });
+
+        sweetElement.querySelector('.edit-btn').addEventListener('click', () => {
+            document.getElementById('edit-sweet-id').value = sweet.id;
+            document.getElementById('edit-sweet-name').value = sweet.name;
+            document.getElementById('edit-sweet-description').value = sweet.description;
+            document.getElementById('edit-sweet-price').value = sweet.price;
+            document.getElementById('edit-sweet-category').value = sweet.category;
+            document.getElementById('edit-sweet-image-url').value = sweet.imageUrl;
+            editSweetModal.style.display = 'block';
+        });
+
+        sweetsListAdmin.appendChild(sweetElement);
     });
 }
+
+editSweetForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const sweetId = document.getElementById('edit-sweet-id').value;
+    const updatedData = {
+        name: document.getElementById('edit-sweet-name').value,
+        description: document.getElementById('edit-sweet-description').value,
+        price: parseFloat(document.getElementById('edit-sweet-price').value),
+        category: document.getElementById('edit-sweet-category').value,
+        imageUrl: document.getElementById('edit-sweet-image-url').value
+    };
+
+    const sweetRef = doc(db, "sweets", sweetId);
+    try {
+        await updateDoc(sweetRef, updatedData);
+        alert("Doce atualizado com sucesso!");
+        editSweetModal.style.display = 'none';
+        fetchAndRenderSweets(); 
+    } catch (error) {
+        console.error("Erro ao atualizar doce: ", error);
+        alert("Falha ao atualizar o doce.");
+    }
+});
+
+cancelEditBtn.addEventListener('click', () => {
+    editSweetModal.style.display = 'none';
+});
 
 async function fetchUsers() {
     const usersCollection = collection(db, 'users');
@@ -61,16 +124,13 @@ async function fetchUsers() {
 async function updateOrderStatus(orderId, newStatus) {
     const orderRef = doc(db, "orders", orderId);
     try {
-        await updateDoc(orderRef, {
-            status: newStatus
-        });
+        await updateDoc(orderRef, { status: newStatus });
         alert(`Status do pedido ${orderId} atualizado para ${newStatus}`);
     } catch (error) {
         console.error("Erro ao atualizar status do pedido: ", error);
         alert("Falha ao atualizar o status.");
     }
 }
-
 window.updateOrderStatus = updateOrderStatus;
 
 async function fetchOrders() {
@@ -111,7 +171,7 @@ async function fetchContacts() {
     contactsSnapshot.forEach(doc => {
         const contact = doc.data();
         const contactElement = document.createElement('div');
-        contactElement.classList.add('user-item'); // Reutilizando a classe
+        contactElement.classList.add('user-item');
         contactElement.innerHTML = `
             <p><strong>De:</strong> ${contact.firstName} ${contact.lastName} (${contact.email})</p>
             <p><strong>Data:</strong> ${new Date(contact.createdAt.seconds * 1000).toLocaleString()}</p>
@@ -121,7 +181,6 @@ async function fetchContacts() {
     });
 }
 
-
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const userDocRef = doc(db, "users", user.uid);
@@ -129,11 +188,11 @@ onAuthStateChanged(auth, async (user) => {
         if (userDoc.exists() && userDoc.data().role === 'admin') {
             loadingMessage.style.display = 'none';
             adminPanel.style.display = 'block';
-            populateImageSelector();
             setupTabs();
             fetchUsers();
             fetchOrders();
-            fetchContacts(); 
+            fetchContacts();
+            fetchAndRenderSweets(); 
         } else {
             alert("Acesso negado. Você não é um administrador.");
             window.location.href = "index.html";
@@ -151,20 +210,20 @@ if (addSweetForm) {
         const description = document.getElementById('sweet-description').value;
         const price = parseFloat(document.getElementById('sweet-price').value);
         const category = document.getElementById('sweet-category').value;
-        const selectedImage = imageSelect.value;
+        const imageUrl = document.getElementById('sweet-image-url').value; 
 
-        if (!selectedImage) {
-            alert("Por favor, selecione uma imagem da lista.");
+        if (!imageUrl) {
+            alert("Por favor, insira uma URL para a imagem.");
             return;
         }
 
         try {
             await addDoc(collection(db, "sweets"), {
-                name, description, price, category,
-                imageUrl: `/img/sweets/${selectedImage}`
+                name, description, price, category, imageUrl
             });
             alert("Doce adicionado com sucesso!");
             addSweetForm.reset();
+            fetchAndRenderSweets(); 
         } catch (error) {
             console.error("Erro ao adicionar doce: ", error);
             alert("Falha ao adicionar o doce.");

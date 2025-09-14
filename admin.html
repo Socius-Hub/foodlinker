@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Admin</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        #edit-sweet-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .sweet-item-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,24 +37,25 @@
     </header>
     <main id="admin-panel" style="display: none;">
         <div class="admin-tabs">
-            <button class="tab-button active" data-tab="add-sweet-content">Adicionar Doce</button>
+            <button class="tab-button active" data-tab="sweets-content">Gerenciar Doces</button>
             <button class="tab-button" data-tab="orders-content">Ver Pedidos</button>
             <button class="tab-button" data-tab="users-content">Ver Usuários</button>
-            <button class="tab-button" data-tab="contacts-content">Contatos</button> </div>
+            <button class="tab-button" data-tab="contacts-content">Contatos</button>
+        </div>
 
-        <div id="add-sweet-content" class="tab-content active">
+        <div id="sweets-content" class="tab-content active">
             <h2>Adicionar Novo Doce</h2>
             <form id="add-sweet-form">
                 <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
                 <textarea id="sweet-description" placeholder="Descrição"></textarea>
                 <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
                 <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
-                <label for="sweet-image-select">Imagem do Doce:</label>
-                <select id="sweet-image-select" required>
-                    <option value="">-- Selecione uma imagem --</option>
-                </select>
+                <input type="url" id="sweet-image-url" placeholder="URL da Imagem do Doce" required>
                 <button type="submit">Adicionar Doce</button>
             </form>
+            <hr style="margin: 2rem 0;">
+            <h2>Doces Existentes</h2>
+            <div id="sweets-list-admin"></div>
         </div>
 
         <div id="orders-content" class="tab-content">
@@ -50,6 +73,26 @@
             <div id="contacts-list-admin"></div>
         </div>
     </main>
+
+    <div id="edit-sweet-modal" style="display: none;">
+        <h3>Editar Doce</h3>
+        <form id="edit-sweet-form">
+            <input type="hidden" id="edit-sweet-id">
+            <label>Nome:</label>
+            <input type="text" id="edit-sweet-name" required>
+            <label>Descrição:</label>
+            <textarea id="edit-sweet-description"></textarea>
+            <label>Preço:</label>
+            <input type="number" id="edit-sweet-price" step="0.01" required>
+            <label>Categoria:</label>
+            <input type="text" id="edit-sweet-category" required>
+            <label>URL da Imagem:</label>
+            <input type="url" id="edit-sweet-image-url" required>
+            <button type="submit">Salvar Alterações</button>
+            <button type="button" id="cancel-edit">Cancelar</button>
+        </form>
+    </div>
+
     <p id="loading-message">Verificando permissões...</p>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>

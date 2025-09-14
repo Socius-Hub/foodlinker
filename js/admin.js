@@ -1,10 +1,28 @@
-import { auth, db, storage } from './firebase-config.js';
+import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { doc, getDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+
+
+const availableImages = [
+    "Mochi.png",
+    "Taiyaki.png"
+];
+
 
 const adminPanel = document.getElementById('admin-panel');
 const loadingMessage = document.getElementById('loading-message');
+const imageSelect = document.getElementById('sweet-image-select');
+
+function populateImageSelector() {
+    if (!imageSelect) return;
+
+    availableImages.forEach(imageName => {
+        const option = document.createElement('option');
+        option.value = imageName;
+        option.textContent = imageName;
+        imageSelect.appendChild(option);
+    });
+}
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -14,6 +32,7 @@ onAuthStateChanged(auth, async (user) => {
         if (userDoc.exists() && userDoc.data().role === 'admin') {
             loadingMessage.style.display = 'none';
             adminPanel.style.display = 'block';
+            populateImageSelector(); 
         } else {
             alert("Acesso negado. Você não é um administrador.");
             window.location.href = "index.html";
@@ -25,37 +44,41 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 const addSweetForm = document.getElementById('add-sweet-form');
-addSweetForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
 
-    const name = document.getElementById('sweet-name').value;
-    const description = document.getElementById('sweet-description').value;
-    const price = parseFloat(document.getElementById('sweet-price').value);
-    const category = document.getElementById('sweet-category').value;
-    const imageFile = document.getElementById('sweet-image').files[0];
+if (addSweetForm) {
+    addSweetForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    if (!imageFile) {
-        alert("Por favor, selecione uma imagem.");
-        return;
-    }
+        const name = document.getElementById('sweet-name').value;
+        const description = document.getElementById('sweet-description').value;
+        const price = parseFloat(document.getElementById('sweet-price').value);
+        const category = document.getElementById('sweet-category').value;
+        const selectedImage = imageSelect.value; // Pega o valor do dropdown
 
-    try {
-        const storageRef = ref(storage, `sweets/${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        const imageUrl = await getDownloadURL(snapshot.ref);
+        if (!selectedImage) {
+            alert("Por favor, selecione uma imagem da lista.");
+            return;
+        }
 
-        await addDoc(collection(db, "sweets"), {
-            name: name,
-            description: description,
-            price: price,
-            category: category,
-            imageUrl: imageUrl
-        });
+        try {
+            const imageUrl = `/img/sweets/${selectedImage}`;
 
-        alert("Doce adicionado com sucesso!");
-        addSweetForm.reset();
-    } catch (error) {
-        console.error("Erro ao adicionar doce: ", error);
-        alert("Falha ao adicionar o doce.");
-    }
-});
+            await addDoc(collection(db, "sweets"), {
+                name: name,
+                description: description,
+                price: price,
+                category: category,
+                imageUrl: imageUrl
+            });
+
+            alert("Doce adicionado com sucesso!");
+            addSweetForm.reset();
+
+        } catch (error) {
+            console.error("Erro ao adicionar doce: ", error);
+            alert("Falha ao adicionar o doce.");
+        }
+    });
+} else {
+    console.error("Erro: Formulário 'add-sweet-form' não encontrado.");
+}

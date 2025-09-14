@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Playfair+Display:wght@500&display=swap');
+
+:root {
+    --cor-primaria: #ff6f91; 
+    --cor-secundaria: #ff9ab4; 
+    --cor-terciaria: #d4a5a5; 
+    --cor-fundo: #fdf0f0;    
+    --cor-texto: #333333;   
+    --cor-branco: #ffffff;
+    --sombra-padrao: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --fonte-titulo: 'Playfair Display', serif;
+    --fonte-corpo: 'Noto Sans JP', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--fonte-corpo);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: var(--fonte-titulo);
+    color: var(--cor-primaria);
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--cor-primaria);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--cor-secundaria);
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+header {
+    background: var(--cor-branco);
+    padding: 1rem 2rem;
+    box-shadow: var(--sombra-padrao);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+header nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+header nav a {
+    font-weight: 700;
+}
+
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    background-color: var(--cor-terciaria);
+    color: var(--cor-branco);
+}
+
+
+#login-container, #register-container, #admin-panel, #contact-form {
+    background: var(--cor-branco);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--sombra-padrao);
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+form, #login-container, #register-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: var(--fonte-corpo);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 5px rgba(255, 111, 145, 0.5);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+button, .button {
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #e65a7f;
+    transform: translateY(-2px);
+}
+
+#google-login-button {
+    background-color: #4285F4;
+}
+
+#google-login-button:hover {
+    background-color: #357ae8;
+}
+
+
+#filters {
+    background: var(--cor-branco);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--sombra-padrao);
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#filters span {
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+
+#sweets-container {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 2rem;
+}
+
+
+.sweet-card {
+    background: var(--cor-branco);
+    border-radius: 10px;
+    box-shadow: var(--sombra-padrao);
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sweet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sweet-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; 
+}
+
+.sweet-card h3 {
+    padding: 1rem 1rem 0 1rem;
+    margin: 0;
+}
+
+.sweet-card p {
+    padding: 0.5rem 1rem;
+    flex-grow: 1; 
+}
+
+.sweet-card .price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cor-primaria);
+    padding: 0 1rem 1rem 1rem;
+    text-align: right;
+}
+
+
+#login-container, #register-container {
+    margin-top: 1rem;
+}
+
+@media (min-width: 600px) {
+    #filters {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+    }
+    
+    #sweets-container {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (min-width: 900px) {
+    #sweets-container {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}

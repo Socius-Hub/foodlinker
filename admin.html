@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Painel do Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Painel do Administrador</h1>
+        <nav>
+            <a href="index.html">Ver Site</a>
+        </nav>
+    </header>
+    <main id="admin-panel" style="display: none;">
+        <h2>Adicionar Novo Doce</h2>
+        <form id="add-sweet-form">
+            <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
+            <textarea id="sweet-description" placeholder="Descrição"></textarea>
+            <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
+            <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
+            <label for="sweet-image">Imagem do Doce:</label>
+            <input type="file" id="sweet-image" accept="image/*" required>
+            <button type="submit">Adicionar Doce</button>
+        </form>
+
+        <h2>Doces Cadastrados</h2>
+        <div id="sweets-list-admin"></div>
+    </main>
+    <p id="loading-message">Verificando permissões...</p>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js" type="module"></script>
+    <script src="js/admin.js" type="module"></script>
+</body>
+</html>

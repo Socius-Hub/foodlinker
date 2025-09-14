@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Oishii Sobremesas Japonesas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Nossos Doces</h1>
+        <nav>
+            <a href="login.html" id="login-link">Login</a>
+            <a href="#" id="logout-link" style="display:none;">Sair</a>
+            <a href="admin.html" id="admin-link" style="display:none;">Painel Admin</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="filters">
+            <input type="text" id="search-by-name" placeholder="Buscar por nome...">
+            <select id="search-by-category">
+                <option value="">Todas as Categorias</option>
+                </select>
+            <input type="range" id="search-by-price" min="0" max="50" value="50">
+            <span>Preço máximo: R$ <span id="price-value">50</span></span>
+        </section>
+
+        <section id="sweets-container">
+            </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Oishii Sobremesas Japonesas</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { collection, getDocs, query, where, getDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 const sweetsContainer = document.getElementById('sweets-container');
 const searchName = document.getElementById('search-by-name');
@@ -9,6 +9,37 @@ const searchPrice = document.getElementById('search-by-price');
 const priceValue = document.getElementById('price-value');
 
 let allSweets = [];
+
+function getCart() {
+    return JSON.parse(localStorage.getItem('cart')) || [];
+}
+
+function saveCart(cart) {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function addToCart(sweetId) {
+    const sweet = allSweets.find(s => s.id === sweetId);
+    if (!sweet) return;
+
+    const cart = getCart();
+    const existingItem = cart.find(item => item.id === sweetId);
+
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({
+            id: sweet.id,
+            name: sweet.name,
+            price: sweet.price,
+            quantity: 1
+        });
+    }
+    saveCart(cart);
+    alert(`${sweet.name} foi adicionado ao carrinho!`);
+}
+
+window.addToCart = addToCart;
 
 function renderSweets(sweets) {
     sweetsContainer.innerHTML = '';
@@ -23,7 +54,10 @@ function renderSweets(sweets) {
             <img src="${sweet.imageUrl}" alt="${sweet.name}">
             <h3>${sweet.name}</h3>
             <p>${sweet.description}</p>
-            <p class="price">R$ ${sweet.price.toFixed(2)}</p>
+            <div class="card-footer">
+                <p class="price">R$ ${sweet.price.toFixed(2)}</p>
+                <button onclick="addToCart('${sweet.id}')">Adicionar ao Carrinho</button>
+            </div>
         `;
         sweetsContainer.appendChild(sweetElement);
     });
@@ -73,14 +107,11 @@ searchPrice.addEventListener('input', () => {
 const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const adminLink = document.getElementById('admin-link');
-const ordersLink = document.getElementById('orders-link');
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         loginLink.style.display = 'none';
         logoutLink.style.display = 'block';
-        ordersLink.style.display = 'block';
-
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists() && userDoc.data().role === 'admin') {
             adminLink.style.display = 'block';
@@ -89,7 +120,6 @@ onAuthStateChanged(auth, async (user) => {
         loginLink.style.display = 'block';
         logoutLink.style.display = 'none';
         adminLink.style.display = 'none';
-        ordersLink.style.display = 'none';
     }
 });
 

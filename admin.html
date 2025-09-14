@@ -14,32 +14,36 @@
         </nav>
     </header>
     <main id="admin-panel" style="display: none;">
-        <section>
+        <div class="admin-tabs">
+            <button class="tab-button active" data-tab="add-sweet-content">Adicionar Doce</button>
+            <button class="tab-button" data-tab="orders-content">Ver Pedidos</button>
+            <button class="tab-button" data-tab="users-content">Ver Usuários</button>
+        </div>
+
+        <div id="add-sweet-content" class="tab-content active">
             <h2>Adicionar Novo Doce</h2>
             <form id="add-sweet-form">
                 <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
                 <textarea id="sweet-description" placeholder="Descrição"></textarea>
                 <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
                 <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
-
                 <label for="sweet-image-select">Imagem do Doce:</label>
                 <select id="sweet-image-select" required>
                     <option value="">-- Selecione uma imagem --</option>
                 </select>
-
                 <button type="submit">Adicionar Doce</button>
             </form>
-        </section>
+        </div>
 
-        <section>
-            <h2>Usuários Cadastrados</h2>
-            <div id="users-list-admin"></div>
-        </section>
-
-        <section>
+        <div id="orders-content" class="tab-content">
             <h2>Pedidos Recebidos</h2>
             <div id="orders-list-admin"></div>
-        </section>
+        </div>
+
+        <div id="users-content" class="tab-content">
+            <h2>Usuários Cadastrados</h2>
+            <div id="users-list-admin"></div>
+        </div>
     </main>
     <p id="loading-message">Verificando permissões...</p>
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Seu Carrinho</h1>
+        <nav>
+            <a href="index.html">Continuar Comprando</a>
+        </nav>
+    </header>
+    <main>
+        <div id="cart-container">
+            <div id="cart-items"></div>
+            <div id="cart-summary">
+                <h3>Resumo do Pedido</h3>
+                <p>Total: <span id="cart-total">R$ 0.00</span></p>
+                <button id="checkout-button">Finalizar Pedido</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
+    <script src="js/firebase-config.js" type="module"></script>
+    <script src="js/cart.js" type="module"></script>
+</body>
+</html>

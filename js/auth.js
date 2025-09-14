@@ -30,9 +30,11 @@ if (registerButton) {
 
         } catch (error) {
             console.error("Erro no cadastro: ", error);
-            alert(error.message);
+            alert("Falha no cadastro: " + error.message);
         }
     });
+} else {
+    console.error("Erro de inicialização: Botão 'register-button' não encontrado no HTML.");
 }
 
 if (loginButton) {
@@ -46,9 +48,11 @@ if (loginButton) {
             window.location.href = "index.html";
         } catch (error) {
             console.error("Erro no login: ", error);
-            alert(error.message);
+            alert("Falha no login: " + error.message);
         }
     });
+} else {
+    console.error("Erro de inicialização: Botão 'login-button' não encontrado no HTML.");
 }
 
 if (googleLoginButton) {
@@ -68,7 +72,9 @@ if (googleLoginButton) {
             window.location.href = "index.html";
         } catch (error) {
             console.error("Erro no login com Google: ", error);
-            alert(error.message);
+            alert("Falha no login com Google: " + error.message);
         }
     });
+} else {
+    console.error("Erro de inicialização: Botão 'google-login-button' não encontrado no HTML.");
 }

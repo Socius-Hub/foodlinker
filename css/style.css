@@ -636,23 +636,22 @@ button:hover {
     justify-content: flex-end;
 }
 
-.filter-container {
+.orders-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 1rem;
     margin-bottom: 1.5rem;
-    flex-wrap: wrap;
 }
 
-.filter-container label {
-    font-weight: bold;
-    color: var(--cor-texto);
+.orders-header h2 {
+    margin-bottom: 0;
 }
 
-.filter-container select {
+#order-status-filter {
     width: auto;
-    min-width: 200px;
+    min-width: 180px;
 }
+
 
 @media (max-width: 768px) {
     main {

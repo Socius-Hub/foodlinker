@@ -11,12 +11,17 @@
         <h1>Nossos Doces</h1>
         <nav>
             <a href="/">Home</a>
-            <a href="/products">Produtos</a>
+            <a href="/products">Cardápio</a>
             <a href="/contact.html">Contato</a> <a href="/cart" id="cart-link">Carrinho</a>
             <a href="/login" id="login-link">Login</a>
             <a href="#" id="logout-link" style="display:none;">Sair</a>
             <a href="/admin" id="admin-link" style="display:none;">Administrar</a>
         </nav>
+        <button class="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
 
     <main>
@@ -25,8 +30,11 @@
             <select id="search-by-category">
                 <option value="">Todas as Categorias</option>
             </select>
-            <input type="range" id="search-by-price" min="0" max="50" value="50">
-            <span>Preço máximo: R$ <span id="price-value">50</span></span>
+            <select id="sort-by-price">
+                <option value="default">Ordenar por</option>
+                <option value="price-asc">Menor Preço</option>
+                <option value="price-desc">Maior Preço</option>
+            </select>
         </section>
 
         <section id="sweets-container">
@@ -43,5 +51,17 @@
     <script src="js/firebase-config.js" type="module"></script>
     <script src="js/common.js" type="module"></script>
     <script src="js/main.js" type="module"></script>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('header nav');
+
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('is-active');
+                menuToggle.classList.toggle('is-active');
+            });
+        }
+    </script>
 </body>
 </html>

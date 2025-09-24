@@ -6,8 +6,7 @@ console.log("main.js foi carregado com sucesso.");
 const sweetsContainer = document.getElementById('sweets-container');
 const searchName = document.getElementById('search-by-name');
 const searchCategory = document.getElementById('search-by-category');
-const searchPrice = document.getElementById('search-by-price');
-const priceValue = document.getElementById('price-value');
+const sortByPrice = document.getElementById('sort-by-price');
 
 let allSweets = [];
 
@@ -114,23 +113,25 @@ function populateCategories() {
 function applyFilters() {
     const nameFilter = searchName.value.toLowerCase();
     const categoryFilter = searchCategory.value;
-    const priceFilter = parseFloat(searchPrice.value);
+    const sortOption = sortByPrice.value;
 
-    const filteredSweets = allSweets.filter(sweet => {
+    let filteredSweets = allSweets.filter(sweet => {
         const nameMatch = sweet.name.toLowerCase().includes(nameFilter);
         const categoryMatch = categoryFilter ? sweet.category === categoryFilter : true;
-        const priceMatch = sweet.price <= priceFilter;
-        return nameMatch && categoryMatch && priceMatch;
+        return nameMatch && categoryMatch;
     });
+
+    if (sortOption === 'price-asc') {
+        filteredSweets.sort((a, b) => a.price - b.price);
+    } else if (sortOption === 'price-desc') {
+        filteredSweets.sort((a, b) => b.price - a.price);
+    }
 
     renderSweets(filteredSweets);
 }
 
 searchName.addEventListener('input', applyFilters);
 searchCategory.addEventListener('change', applyFilters);
-searchPrice.addEventListener('input', () => {
-    priceValue.textContent = searchPrice.value;
-    applyFilters();
-});
+sortByPrice.addEventListener('change', applyFilters);
 
 fetchSweets();

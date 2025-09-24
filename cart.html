@@ -11,7 +11,14 @@
         <h1>Seu Carrinho</h1>
         <nav>
             <a href="index.html">Continuar Comprando</a>
+            <a href="/account.html" id="account-link" style="display:none;">Minha Conta</a>
+            <a href="#" id="logout-link" style="display:none;">Sair</a>
         </nav>
+        <button class="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
     <main>
         <div id="cart-container">
@@ -30,10 +37,39 @@
         </div>
     </main>
 
+    <footer>
+        <p>&copy; 2025 Oishii Sobremesas Japonesas</p>
+    </footer>
+
+    <div id="phone-modal-overlay" class="modal-overlay">
+        <div id="phone-modal" class="modal">
+            <h3 id="phone-modal-title">Confirmar Telefone</h3>
+            <p id="phone-modal-message"></p>
+            <div id="phone-input-container">
+                <label for="phone-input">Número de Telefone*</label>
+                <input type="tel" id="phone-input" placeholder="(XX) XXXXX-XXXX" required>
+            </div>
+            <div id="phone-modal-buttons">
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
     <script src="js/firebase-config.js" type="module"></script>
     <script src="js/cart.js" type="module"></script>
+    <script src="js/common.js" type="module"></script>
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('header nav');
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('is-active');
+                menuToggle.classList.toggle('is-active');
+            });
+        }
+    </script>
 </body>
 </html>

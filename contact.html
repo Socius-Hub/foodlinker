@@ -18,6 +18,11 @@
             <a href="/admin" id="admin-link" style="display:none;">Administrar</a>
             <a href="#" id="logout-link" style="display:none;">Sair</a>
         </nav>
+        <button class="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
     <main>
         <div class="contact-container">
@@ -65,5 +70,17 @@
     <script src="js/firebase-config.js" type="module"></script>
     <script src="js/contact.js" type="module"></script>
     <script src="js/common.js" type="module"></script>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('header nav');
+
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('is-active');
+                menuToggle.classList.toggle('is-active');
+            });
+        }
+    </script>
 </body>
 </html>

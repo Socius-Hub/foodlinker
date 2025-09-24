@@ -150,6 +150,8 @@ async function fetchOrders() {
 
         orderElement.innerHTML = `
             <h4>Pedido de: ${order.userEmail}</h4>
+            <p><strong>Nome:</strong> ${order.userName || 'Não informado'}</p>
+            <p><strong>Telefone:</strong> ${order.userPhone || 'Não informado'}</p>
             <p><strong>Data:</strong> ${new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
             <p><strong>Total:</strong> R$ ${order.totalPrice.toFixed(2)}</p>
             <div class="status-updater">

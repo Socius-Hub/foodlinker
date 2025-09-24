@@ -8,13 +8,15 @@ const usersListAdmin = document.getElementById('users-list-admin');
 const ordersListAdmin = document.getElementById('orders-list-admin');
 const contactsListAdmin = document.getElementById('contacts-list-admin');
 const addSweetForm = document.getElementById('add-sweet-form');
-const tabs = document.querySelectorAll('.tab-button');
+const tabs = document.querySelectorAll('.admin-tabs .tab-button');
 const tabContents = document.querySelectorAll('.tab-content');
 
 const sweetsListAdmin = document.getElementById('sweets-list-admin');
 const editSweetModal = document.getElementById('edit-sweet-modal');
 const editSweetForm = document.getElementById('edit-sweet-form');
 const cancelEditBtn = document.getElementById('cancel-edit');
+
+let allOrders = []; 
 
 function setupTabs() {
     tabs.forEach(tab => {
@@ -29,6 +31,66 @@ function setupTabs() {
                     content.classList.add('active');
                 }
             });
+        });
+    });
+}
+
+function renderOrders(statusFilter = 'Todos') {
+    ordersListAdmin.innerHTML = '';
+
+    const ordersToRender = statusFilter === 'Todos'
+        ? allOrders
+        : allOrders.filter(order => order.status === statusFilter);
+
+    if (ordersToRender.length === 0) {
+        ordersListAdmin.innerHTML = '<p>Nenhum pedido encontrado com este status.</p>';
+        return;
+    }
+
+    ordersToRender.forEach(orderData => {
+        const order = orderData;
+        const orderId = order.id;
+        const orderElement = document.createElement('div');
+        orderElement.classList.add('order-item');
+        let itemsHtml = order.items.map(item => `<li>${item.quantity}x ${item.name}</li>`).join('');
+        
+        const statusOptions = ['Pendente', 'Em produção', 'Concluído']
+            .map(status => `<option value="${status}" ${order.status === status ? 'selected' : ''}>${status}</option>`)
+            .join('');
+
+        orderElement.innerHTML = `
+            <h4>Pedido de: ${order.userEmail}</h4>
+            <p><strong>Nome:</strong> ${order.userName || 'Não informado'}</p>
+            <p><strong>Telefone:</strong> ${order.userPhone || 'Não informado'}</p>
+            <p><strong>Data:</strong> ${new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
+            <p><strong>Total:</strong> R$ ${order.totalPrice.toFixed(2)}</p>
+            <div class="status-updater">
+                <label for="status-${orderId}"><strong>Status:</strong></label>
+                <select id="status-${orderId}" onchange="updateOrderStatus('${orderId}', this.value)">
+                    ${statusOptions}
+                </select>
+            </div>
+            <ul>${itemsHtml}</ul>
+        `;
+        ordersListAdmin.appendChild(orderElement);
+    });
+}
+
+async function fetchOrders() {
+    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+    const ordersSnapshot = await getDocs(q);
+    allOrders = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderOrders(); 
+}
+
+function setupOrderFilters() {
+    const filterButtons = document.querySelectorAll('#order-status-filters .filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            const status = button.dataset.status;
+            renderOrders(status);
         });
     });
 }
@@ -55,7 +117,7 @@ async function fetchAndRenderSweets() {
                 try {
                     await deleteDoc(doc(db, "sweets", sweet.id));
                     alert("Doce excluído com sucesso!");
-                    fetchAndRenderSweets(); // Atualiza a lista
+                    fetchAndRenderSweets();
                 } catch (error) {
                     console.error("Erro ao excluir doce: ", error);
                     alert("Falha ao excluir o doce.");
@@ -126,45 +188,18 @@ async function updateOrderStatus(orderId, newStatus) {
     try {
         await updateDoc(orderRef, { status: newStatus });
         alert(`Status do pedido ${orderId} atualizado para ${newStatus}`);
+        const orderToUpdate = allOrders.find(order => order.id === orderId);
+        if (orderToUpdate) {
+            orderToUpdate.status = newStatus;
+        }
+        const currentFilter = document.querySelector('#order-status-filters .filter-btn.active').dataset.status;
+        renderOrders(currentFilter);
     } catch (error) {
         console.error("Erro ao atualizar status do pedido: ", error);
         alert("Falha ao atualizar o status.");
     }
 }
 window.updateOrderStatus = updateOrderStatus;
-
-async function fetchOrders() {
-    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-    const ordersSnapshot = await getDocs(q);
-    ordersListAdmin.innerHTML = '';
-    ordersSnapshot.forEach(doc => {
-        const order = doc.data();
-        const orderId = doc.id;
-        const orderElement = document.createElement('div');
-        orderElement.classList.add('order-item');
-        let itemsHtml = order.items.map(item => `<li>${item.quantity}x ${item.name}</li>`).join('');
-        
-        const statusOptions = ['Pendente', 'Em produção', 'Concluído']
-            .map(status => `<option value="${status}" ${order.status === status ? 'selected' : ''}>${status}</option>`)
-            .join('');
-
-        orderElement.innerHTML = `
-            <h4>Pedido de: ${order.userEmail}</h4>
-            <p><strong>Nome:</strong> ${order.userName || 'Não informado'}</p>
-            <p><strong>Telefone:</strong> ${order.userPhone || 'Não informado'}</p>
-            <p><strong>Data:</strong> ${new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>
-            <p><strong>Total:</strong> R$ ${order.totalPrice.toFixed(2)}</p>
-            <div class="status-updater">
-                <label for="status-${orderId}"><strong>Status:</strong></label>
-                <select id="status-${orderId}" onchange="updateOrderStatus('${orderId}', this.value)">
-                    ${statusOptions}
-                </select>
-            </div>
-            <ul>${itemsHtml}</ul>
-        `;
-        ordersListAdmin.appendChild(orderElement);
-    });
-}
 
 async function fetchContacts() {
     const q = query(collection(db, "contacts"), orderBy("createdAt", "desc"));
@@ -191,6 +226,7 @@ onAuthStateChanged(auth, async (user) => {
             loadingMessage.style.display = 'none';
             adminPanel.style.display = 'block';
             setupTabs();
+            setupOrderFilters();
             fetchUsers();
             fetchOrders();
             fetchContacts();

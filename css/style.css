@@ -601,7 +601,6 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-/* Estilos do Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -635,6 +634,33 @@ button:hover {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
+}
+
+#order-status-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--cor-terciaria);
+    background-color: var(--cor-branco);
+    color: var(--cor-texto);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background-color: var(--cor-fundo);
+}
+
+.filter-btn.active {
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    border-color: var(--cor-primaria);
 }
 
 @media (max-width: 768px) {

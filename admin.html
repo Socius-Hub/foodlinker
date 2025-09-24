@@ -60,11 +60,14 @@
 
         <div id="orders-content" class="tab-content">
             <h2>Pedidos Recebidos</h2>
-            <div id="order-status-filters">
-                <button class="filter-btn active" data-status="Todos">Todos</button>
-                <button class="filter-btn" data-status="Pendente">Pendente</button>
-                <button class="filter-btn" data-status="Em produção">Em produção</button>
-                <button class="filter-btn" data-status="Concluído">Concluído</button>
+            <div class="filter-container">
+                <label for="order-status-filter">Filtrar por status:</label>
+                <select id="order-status-filter">
+                    <option value="Todos">Todos</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Em produção">Em produção</option>
+                    <option value="Concluído">Concluído</option>
+                </select>
             </div>
             <div id="orders-list-admin"></div>
         </div>

@@ -636,31 +636,22 @@ button:hover {
     justify-content: flex-end;
 }
 
-#order-status-filters {
+.filter-container {
     display: flex;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1.5rem;
     flex-wrap: wrap;
 }
 
-.filter-btn {
-    padding: 8px 16px;
-    border: 1px solid var(--cor-terciaria);
-    background-color: var(--cor-branco);
+.filter-container label {
+    font-weight: bold;
     color: var(--cor-texto);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.filter-btn:hover {
-    background-color: var(--cor-fundo);
-}
-
-.filter-btn.active {
-    background-color: var(--cor-primaria);
-    color: var(--cor-branco);
-    border-color: var(--cor-primaria);
+.filter-container select {
+    width: auto;
+    min-width: 200px;
 }
 
 @media (max-width: 768px) {

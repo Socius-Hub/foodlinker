@@ -15,6 +15,7 @@ const sweetsListAdmin = document.getElementById('sweets-list-admin');
 const editSweetModal = document.getElementById('edit-sweet-modal');
 const editSweetForm = document.getElementById('edit-sweet-form');
 const cancelEditBtn = document.getElementById('cancel-edit');
+const orderStatusFilter = document.getElementById('order-status-filter');
 
 let allOrders = []; 
 
@@ -81,18 +82,6 @@ async function fetchOrders() {
     const ordersSnapshot = await getDocs(q);
     allOrders = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     renderOrders(); 
-}
-
-function setupOrderFilters() {
-    const filterButtons = document.querySelectorAll('#order-status-filters .filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            const status = button.dataset.status;
-            renderOrders(status);
-        });
-    });
 }
 
 async function fetchAndRenderSweets() {
@@ -192,8 +181,7 @@ async function updateOrderStatus(orderId, newStatus) {
         if (orderToUpdate) {
             orderToUpdate.status = newStatus;
         }
-        const currentFilter = document.querySelector('#order-status-filters .filter-btn.active').dataset.status;
-        renderOrders(currentFilter);
+        renderOrders(orderStatusFilter.value);
     } catch (error) {
         console.error("Erro ao atualizar status do pedido: ", error);
         alert("Falha ao atualizar o status.");
@@ -226,7 +214,13 @@ onAuthStateChanged(auth, async (user) => {
             loadingMessage.style.display = 'none';
             adminPanel.style.display = 'block';
             setupTabs();
-            setupOrderFilters();
+            
+            if (orderStatusFilter) {
+                orderStatusFilter.addEventListener('change', () => {
+                    renderOrders(orderStatusFilter.value);
+                });
+            }
+
             fetchUsers();
             fetchOrders();
             fetchContacts();

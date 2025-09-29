@@ -37,6 +37,11 @@
         <nav>
             <a href="index.html">Ver Site</a>
         </nav>
+        <button class="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
     <main id="admin-panel" style="display: none;">
         <div class="admin-tabs">
@@ -111,5 +116,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" type="module"></script>
     <script src="./js/firebase-config.js" type="module"></script>
     <script src="./js/admin.js" type="module"></script>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('.admin-tabs');
+
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('is-active');
+                menuToggle.classList.toggle('is-active');
+            });
+        }
+    </script>
 </body>
 </html>

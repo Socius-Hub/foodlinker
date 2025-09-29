@@ -702,4 +702,26 @@ button:hover {
     .welcome-content {
         text-align: center;
     }
+
+    .admin-tabs {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 70%;
+        height: 100vh;
+        background-color: var(--cor-fundo);
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        z-index: 999;
+        transition: left 0.3s ease-in-out;
+        border-bottom: none;
+    }
+
+    .admin-tabs.is-active {
+        left: 0;
+    }
 }

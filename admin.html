@@ -119,12 +119,22 @@
 
     <script>
         const menuToggle = document.querySelector('.menu-toggle');
-        const mainNav = document.querySelector('.admin-tabs');
+        const adminMenu = document.querySelector('.admin-tabs');
+        const menuButtons = document.querySelectorAll('.admin-tabs .tab-button');
 
-        if (menuToggle && mainNav) {
+        if (menuToggle && adminMenu) {
             menuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('is-active');
+                adminMenu.classList.toggle('is-active');
                 menuToggle.classList.toggle('is-active');
+            });
+        }
+
+        if (menuButtons.length > 0 && adminMenu && menuToggle) {
+            menuButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    adminMenu.classList.remove('is-active');
+                    menuToggle.classList.remove('is-active');
+                });
             });
         }
     </script>

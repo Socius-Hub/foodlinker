@@ -80,10 +80,6 @@ async function fetchReviewsForSweet(sweetId) {
 
         let reviewsHtml = `<h4>Avaliações (${reviewCount})</h4>`;
         reviewsHtml += renderStars(averageRating);
-
-        if (reviewCount === 0) {
-            reviewsHtml += "<p style='font-size: 0.9rem; margin-top: 4px;'>Nenhuma avaliação ainda.</p>";
-        }
         
         reviewsContainer.innerHTML = reviewsHtml;
 

@@ -227,6 +227,7 @@ button:hover {
 .reviews-section {
     padding: 0 1rem 1rem 1rem;
     border-top: 1px solid #f0f0f0;
+    min-height: 5rem;
 }
 
 .review-item {
@@ -803,7 +804,7 @@ button:hover {
 }
 
 #mobile-cart-fab {
-    display: none; /* Escondido por padrão */
+    display: none;
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -883,11 +884,11 @@ button:hover {
     }
     
     .cart-nav-link {
-        display: none; /* Esconde o link "Carrinho" do menu principal no mobile */
+        display: none;
     }
 
     #mobile-cart-fab {
-        display: flex; /* Mostra o botão flutuante no mobile */
+        display: flex;
     }
 
     .welcome-section {

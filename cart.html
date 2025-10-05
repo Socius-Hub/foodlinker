@@ -6,15 +6,15 @@
     <title>Carrinho de Compras</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/jpeg" href="img/icon.jpg">
-
     <link rel="apple-touch-icon" href="img/icon.jpg">
 </head>
 <body>
     <header>
         <h1>Seu Carrinho</h1>
         <nav>
-            <a href="index.html">Continuar Comprando</a>
-            <a href="/account.html" id="account-link" style="display:none;">Minha Conta</a>
+            <a href="/">Home</a>
+            <a href="/products">Cardápio</a>
+            <a href="/pedidos" id="orders-link" style="display:none;">Pedidos</a>
             <a href="#" id="logout-link" style="display:none;">Sair</a>
         </nav>
         <button class="menu-toggle">
@@ -31,12 +31,6 @@
                 <p>Total: <span id="cart-total">R$ 0.00</span></p>
                 <button id="checkout-button">Finalizar Pedido</button>
             </div>
-        </div>
-
-        <div id="order-history-container" class="cart-container" style="margin-top: 2rem;">
-            <h2>Seu Histórico de Pedidos</h2>
-            <div id="order-history-list">
-                </div>
         </div>
     </main>
 

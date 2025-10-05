@@ -5,8 +5,6 @@ import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, do
 const cartItemsContainer = document.getElementById('cart-items');
 const cartTotalSpan = document.getElementById('cart-total');
 const checkoutButton = document.getElementById('checkout-button');
-const orderHistoryList = document.getElementById('order-history-list');
-const orderHistoryContainer = document.getElementById('order-history-container');
 
 const modalOverlay = document.getElementById('phone-modal-overlay');
 const modalTitle = document.getElementById('phone-modal-title');
@@ -16,6 +14,10 @@ const phoneInput = document.getElementById('phone-input');
 const modalButtons = document.getElementById('phone-modal-buttons');
 
 let currentUser;
+
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+});
 
 async function proceedToCheckout(userPhone) {
     const userDocRef = doc(db, "users", currentUser.uid);
@@ -44,7 +46,7 @@ async function proceedToCheckout(userPhone) {
         });
         alert("Pedido realizado com sucesso!");
         localStorage.removeItem('cart');
-        window.location.href = "index.html"; 
+        window.location.href = "/pedidos"; 
     } catch (error) {
         console.error("Erro ao finalizar pedido: ", error);
         alert("Falha ao registrar o pedido.");
@@ -74,7 +76,7 @@ function requestPhoneNumber(existingPhone = '') {
     phoneInput.value = existingPhone;
     phoneInputContainer.style.display = 'block';
 
-    modalButtons.innerHTML = ''; // Limpa botões antigos
+    modalButtons.innerHTML = '';
     const saveButton = document.createElement('button');
     saveButton.textContent = "Salvar e Continuar";
     saveButton.onclick = () => savePhoneAndCheckout(phoneInput.value);
@@ -124,46 +126,6 @@ checkoutButton.addEventListener('click', async () => {
         requestPhoneNumber();
     }
 });
-
-
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    if (user) {
-        fetchUserOrders(user.uid);
-    } else {
-        orderHistoryContainer.style.display = 'none';
-    }
-});
-
-async function fetchUserOrders(userId) {
-    if (!userId) {
-        orderHistoryContainer.style.display = 'none';
-        return;
-    }
-    orderHistoryContainer.style.display = 'block';
-    const ordersRef = collection(db, "orders");
-    const q = query(ordersRef, where("userId", "==", userId), orderBy("createdAt", "desc"));
-    try {
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            orderHistoryList.innerHTML = '<p>Você ainda não fez nenhum pedido.</p>';
-            return;
-        }
-        orderHistoryList.innerHTML = ''; 
-        querySnapshot.forEach(doc => {
-            const order = doc.data();
-            const orderElement = document.createElement('div');
-            orderElement.classList.add('order-item'); 
-            const itemsHtml = order.items.map(item => `<li>${item.quantity}x ${item.name}</li>`).join('');
-            const orderDate = new Date(order.createdAt.seconds * 1000).toLocaleDateString('pt-BR');
-            orderElement.innerHTML = `<h4>Pedido de ${orderDate}</h4><p><strong>Status:</strong> ${order.status}</p><p><strong>Total:</strong> R$ ${order.totalPrice.toFixed(2)}</p><p><strong>Itens:</strong></p><ul>${itemsHtml}</ul>`;
-            orderHistoryList.appendChild(orderElement);
-        });
-    } catch (error) {
-        console.error("Erro ao buscar histórico de pedidos: ", error);
-        orderHistoryList.innerHTML = '<p>Ocorreu um erro ao carregar seu histórico.</p>';
-    }
-}
 
 function getCart() { return JSON.parse(localStorage.getItem('cart')) || []; }
 function saveCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); renderCart(); }

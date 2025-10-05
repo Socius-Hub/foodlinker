@@ -5,11 +5,13 @@ import { getDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-f
 const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const adminLink = document.getElementById('admin-link');
+const ordersLink = document.getElementById('orders-link'); // Novo link
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         if(loginLink) loginLink.style.display = 'none';
         if(logoutLink) logoutLink.style.display = 'block';
+        if(ordersLink) ordersLink.style.display = 'block'; // Mostrar link de pedidos
         
         try {
             const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -23,6 +25,7 @@ onAuthStateChanged(auth, async (user) => {
         if(loginLink) loginLink.style.display = 'block';
         if(logoutLink) logoutLink.style.display = 'none';
         if(adminLink) adminLink.style.display = 'none';
+        if(ordersLink) ordersLink.style.display = 'none'; // Esconder link de pedidos
     }
 });
 

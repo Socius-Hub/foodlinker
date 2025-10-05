@@ -797,3 +797,65 @@ button:hover {
         flex-grow: 0;
     }
 }
+
+#order-history-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--cor-branco);
+    border-radius: 10px;
+    box-shadow: var(--sombra-padrao);
+}
+
+#order-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.order-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.order-card-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.order-card-header h4 {
+    margin: 0;
+}
+.order-card-header p {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.order-card-body p {
+    margin-top: 0;
+}
+
+.order-item-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.review-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    background-color: var(--cor-secundaria);
+}
+.review-button:hover {
+    background-color: var(--cor-primaria);
+}
+.review-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}

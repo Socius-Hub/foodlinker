@@ -63,39 +63,29 @@ async function fetchReviewsForSweet(sweetId) {
     const reviewsContainer = document.getElementById(`reviews-${sweetId}`);
     if (!reviewsContainer) return;
 
-    const q = query(collection(db, "reviews"), where("sweetId", "==", sweetId), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "reviews"), where("sweetId", "==", sweetId));
 
     try {
         const querySnapshot = await getDocs(q);
         
         let totalRating = 0;
-        const reviews = [];
+        let reviewCount = querySnapshot.size;
+        
         querySnapshot.forEach(doc => {
-            const review = doc.data();
-            reviews.push(review);
-            totalRating += review.rating;
+            totalRating += doc.data().rating;
         });
         
-        const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
-        const reviewCount = reviews.length;
+        const averageRating = reviewCount > 0 ? totalRating / reviewCount : 0;
 
         let reviewsHtml = `<h4>Avaliações (${reviewCount})</h4>`;
         reviewsHtml += renderStars(averageRating);
 
         if (reviewCount === 0) {
-            reviewsHtml += "<p>Nenhuma avaliação ainda.</p>";
-        } else {
-            reviews.forEach(review => {
-                reviewsHtml += `
-                    <div class="review-item">
-                        <p><strong>${review.userName}</strong></p>
-                        ${renderStars(review.rating)}
-                        <p>${review.comment}</p>
-                    </div>
-                `;
-            });
+            reviewsHtml += "<p style='font-size: 0.9rem; margin-top: 4px;'>Nenhuma avaliação ainda.</p>";
         }
+        
         reviewsContainer.innerHTML = reviewsHtml;
+
     } catch (error) {
         console.error("Erro ao buscar avaliações: ", error);
         reviewsContainer.innerHTML = "<p>Erro ao carregar avaliações.</p>";

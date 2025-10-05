@@ -122,10 +122,15 @@ reviewForm.addEventListener('submit', async (e) => {
             comment: comment,
             createdAt: serverTimestamp()
         });
+        
         alert("Avaliação enviada com sucesso!");
+        
+        const buttonToDisable = document.querySelector(`.review-button[data-sweet-id="${currentSweetIdToReview}"]`);
+        if (buttonToDisable) {
+            buttonToDisable.disabled = true;
+        }
+        
         closeReviewModal();
-        // Opcional: Desabilitar o botão que foi clicado
-        document.querySelector(`.review-button[data-sweet-id="${currentSweetIdToReview}"]`).disabled = true;
 
     } catch (error) {
         console.error("Erro ao enviar avaliação: ", error);

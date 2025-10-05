@@ -45,14 +45,15 @@
     </header>
     <main id="admin-panel" style="display: none;">
         <div class="admin-tabs">
-            <button class="tab-button active" data-tab="sweets-content">Gerenciar Doces</button>
+            <button class="tab-button active" data-tab="add-sweet-content">Adicionar Doce</button>
+            <button class="tab-button" data-tab="modify-sweets-content">Modificar Doces</button>
             <button class="tab-button" data-tab="orders-content">Ver Pedidos</button>
             <button class="tab-button" data-tab="users-content">Ver Usuários</button>
             <button class="tab-button" data-tab="contacts-content">Contatos</button>
             <button class="tab-button" data-tab="reviews-content">Moderar Avaliações</button>
         </div>
 
-        <div id="sweets-content" class="tab-content active">
+        <div id="add-sweet-content" class="tab-content active">
             <h2>Adicionar Novo Doce</h2>
             <form id="add-sweet-form">
                 <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
@@ -62,7 +63,9 @@
                 <input type="url" id="sweet-image-url" placeholder="URL da Imagem do Doce" required>
                 <button type="submit">Adicionar Doce</button>
             </form>
-            <hr style="margin: 2rem 0;">
+        </div>
+
+        <div id="modify-sweets-content" class="tab-content">
             <h2>Doces Existentes</h2>
             <div id="sweets-list-admin"></div>
         </div>

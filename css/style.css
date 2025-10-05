@@ -736,18 +736,14 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-.admin-main-area {
-    position: relative;
-    width: 100%;
-}
-
 .admin-body .menu-toggle {
-    position: absolute;
-    top: 0;
-    left: 2rem;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1002; 
     display: block;
-    margin-top: 1rem;
-    z-index: 1;
+    width: 50px;
+    height: 50px;
 }
 
 .admin-body .admin-tabs {
@@ -804,7 +800,7 @@ button:hover {
 }
 
 #mobile-cart-fab {
-    display: none;
+    display: none; 
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -849,6 +845,15 @@ button:hover {
     
     .admin-body .menu-toggle {
         left: 1rem;
+        top: 15px;
+    }
+    
+    .admin-body header {
+        justify-content: center;
+    }
+    
+    .admin-body header nav {
+        display: none;
     }
 
     header h1 {

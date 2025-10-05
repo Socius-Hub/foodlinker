@@ -734,25 +734,37 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-
 .admin-body header {
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.admin-header-left {
+.admin-body .admin-header-left {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
 }
 
-.admin-header-left h1 {
+.admin-body .admin-header-left h1 {
     margin-bottom: 0;
 }
 
 .admin-body .menu-toggle {
-    display: block;
-    margin: 0;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1002;
+    background-color: white;
+    padding: 12px;
+    border-radius: 50%;
+    box-shadow: var(--sombra-padrao);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .admin-body .admin-tabs {
@@ -772,6 +784,7 @@ button:hover {
     z-index: 999;
     transition: left 0.3s ease-in-out;
     border-bottom: none;
+    padding: 1rem;
 }
 
 .admin-body .admin-tabs.is-active {
@@ -786,10 +799,33 @@ button:hover {
 }
 
 
-@media (min-width: 769px) {
-    .admin-body header nav {
-        display: flex;
+@media (min-width: 600px) {
+    #filters {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
     }
+
+    #filters input[type="text"], #filters select {
+        flex: 1;
+        min-width: 150px;
+    }
+}
+
+@media (min-width: 900px) {
+    #sweets-container {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+@media (min-width: 769px) {
+   body:not(.admin-body) .menu-toggle {
+       display: none;
+   }
+   .admin-body .admin-header-left {
+       display: block;
+   }
 }
 
 
@@ -800,6 +836,18 @@ button:hover {
 
     header {
         padding: 1rem;
+    }
+    
+    .admin-body header {
+        justify-content: center;
+    }
+    
+    .admin-body header nav {
+        display: none;
+    }
+    
+    .admin-body .admin-header-left {
+        display: none;
     }
 
     header h1 {

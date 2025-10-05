@@ -734,11 +734,18 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
+.admin-main-area {
+    position: relative;
+    width: 100%;
+}
+
 .admin-body .menu-toggle {
+    position: absolute;
+    top: 0;
+    left: 2rem;
     display: block;
-    margin-left: 2rem; 
     margin-top: 1rem;
-    align-self: flex-start;
+    z-index: 1;
 }
 
 .admin-body .admin-tabs {
@@ -795,7 +802,7 @@ button:hover {
     }
     
     .admin-body .menu-toggle {
-        margin-left: 1rem;
+        left: 1rem;
     }
 
     header h1 {

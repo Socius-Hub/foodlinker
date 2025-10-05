@@ -39,67 +39,69 @@
         </nav>
     </header>
 
-    <button class="menu-toggle">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-    </button>
-    
-    <main id="admin-panel" style="display: none;">
-        <div class="admin-tabs">
-            <button class="tab-button active" data-tab="add-sweet-content">Adicionar Doce</button>
-            <button class="tab-button" data-tab="modify-sweets-content">Modificar Doces</button>
-            <button class="tab-button" data-tab="orders-content">Ver Pedidos</button>
-            <button class="tab-button" data-tab="users-content">Ver Usuários</button>
-            <button class="tab-button" data-tab="contacts-content">Contatos</button>
-            <button class="tab-button" data-tab="reviews-content">Moderar Avaliações</button>
-        </div>
-
-        <div id="add-sweet-content" class="tab-content active">
-            <h2>Adicionar Novo Doce</h2>
-            <form id="add-sweet-form">
-                <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
-                <textarea id="sweet-description" placeholder="Descrição"></textarea>
-                <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
-                <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
-                <input type="url" id="sweet-image-url" placeholder="URL da Imagem do Doce" required>
-                <button type="submit">Adicionar Doce</button>
-            </form>
-        </div>
-
-        <div id="modify-sweets-content" class="tab-content">
-            <h2>Doces Existentes</h2>
-            <div id="sweets-list-admin"></div>
-        </div>
-
-        <div id="orders-content" class="tab-content">
-            <div class="orders-header">
-                <h2>Pedidos Recebidos</h2>
-                <select id="order-status-filter">
-                    <option value="Todos">Todos</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Em produção">Em produção</option>
-                    <option value="Concluído">Concluído</option>
-                </select>
+    <div class="admin-main-area">
+        <button class="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        
+        <main id="admin-panel" style="display: none;">
+            <div class="admin-tabs">
+                <button class="tab-button active" data-tab="add-sweet-content">Adicionar Doce</button>
+                <button class="tab-button" data-tab="modify-sweets-content">Modificar Doces</button>
+                <button class="tab-button" data-tab="orders-content">Ver Pedidos</button>
+                <button class="tab-button" data-tab="users-content">Ver Usuários</button>
+                <button class="tab-button" data-tab="contacts-content">Contatos</button>
+                <button class="tab-button" data-tab="reviews-content">Moderar Avaliações</button>
             </div>
-            <div id="orders-list-admin"></div>
-        </div>
 
-        <div id="users-content" class="tab-content">
-            <h2>Usuários Cadastrados</h2>
-            <div id="users-list-admin"></div>
-        </div>
+            <div id="add-sweet-content" class="tab-content active">
+                <h2>Adicionar Novo Doce</h2>
+                <form id="add-sweet-form">
+                    <input type="text" id="sweet-name" placeholder="Nome do Doce" required>
+                    <textarea id="sweet-description" placeholder="Descrição"></textarea>
+                    <input type="number" id="sweet-price" placeholder="Preço (ex: 12.50)" step="0.01" required>
+                    <input type="text" id="sweet-category" placeholder="Categoria (ex: Mochi)" required>
+                    <input type="url" id="sweet-image-url" placeholder="URL da Imagem do Doce" required>
+                    <button type="submit">Adicionar Doce</button>
+                </form>
+            </div>
 
-        <div id="contacts-content" class="tab-content">
-            <h2>Mensagens de Contato</h2>
-            <div id="contacts-list-admin"></div>
-        </div>
+            <div id="modify-sweets-content" class="tab-content">
+                <h2>Doces Existentes</h2>
+                <div id="sweets-list-admin"></div>
+            </div>
 
-        <div id="reviews-content" class="tab-content">
-            <h2>Moderar Avaliações</h2>
-            <div id="reviews-list-admin"></div>
-        </div>
-    </main>
+            <div id="orders-content" class="tab-content">
+                <div class="orders-header">
+                    <h2>Pedidos Recebidos</h2>
+                    <select id="order-status-filter">
+                        <option value="Todos">Todos</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em produção">Em produção</option>
+                        <option value="Concluído">Concluído</option>
+                    </select>
+                </div>
+                <div id="orders-list-admin"></div>
+            </div>
+
+            <div id="users-content" class="tab-content">
+                <h2>Usuários Cadastrados</h2>
+                <div id="users-list-admin"></div>
+            </div>
+
+            <div id="contacts-content" class="tab-content">
+                <h2>Mensagens de Contato</h2>
+                <div id="contacts-list-admin"></div>
+            </div>
+
+            <div id="reviews-content" class="tab-content">
+                <h2>Moderar Avaliações</h2>
+                <div id="reviews-list-admin"></div>
+            </div>
+        </main>
+    </div>
 
     <div id="edit-sweet-modal" style="display: none;">
         <h3>Editar Doce</h3>
@@ -150,6 +152,7 @@
         }
         
         document.addEventListener('click', function(event) {
+            if (!adminMenu || !menuToggle) return;
             const isClickInsideMenu = adminMenu.contains(event.target);
             const isClickOnToggle = menuToggle.contains(event.target);
 

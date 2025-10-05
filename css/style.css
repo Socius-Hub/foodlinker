@@ -223,6 +223,36 @@ button:hover {
     text-align: right;
 }
 
+.reviews-section {
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.review-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-item p {
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.review-form {
+    padding: 1rem;
+    border-top: 1px solid #f0f0f0;
+    background-color: #fdf8f8;
+}
+
+.review-form h4 {
+    margin-top: 0;
+    font-size: 1rem;
+}
+
 
 #login-container, #register-container {
     margin-top: 1rem;
@@ -274,7 +304,7 @@ button:hover {
     text-align: center;
 }
 
-#users-list-admin, #orders-list-admin {
+#users-list-admin, #orders-list-admin, #reviews-list-admin {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -377,7 +407,7 @@ button:hover {
 .sweet-card .price {
     padding: 0.5rem 1rem;
     text-align: left;
-    flex-grow: 1; 
+    flex-grow: 0; 
 }
 
 .card-footer {

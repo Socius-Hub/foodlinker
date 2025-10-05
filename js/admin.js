@@ -12,6 +12,7 @@ const tabs = document.querySelectorAll('.admin-tabs .tab-button');
 const tabContents = document.querySelectorAll('.tab-content');
 
 const sweetsListAdmin = document.getElementById('sweets-list-admin');
+const reviewsListAdmin = document.getElementById('reviews-list-admin');
 const editSweetModal = document.getElementById('edit-sweet-modal');
 const editSweetForm = document.getElementById('edit-sweet-form');
 const cancelEditBtn = document.getElementById('cancel-edit');
@@ -206,6 +207,49 @@ async function fetchContacts() {
     });
 }
 
+async function fetchAndRenderReviews() {
+    const reviewsCollection = collection(db, 'reviews');
+    const q = query(reviewsCollection, orderBy("createdAt", "desc"));
+    const reviewsSnapshot = await getDocs(q);
+    reviewsListAdmin.innerHTML = '';
+
+    if (reviewsSnapshot.empty) {
+        reviewsListAdmin.innerHTML = '<p>Nenhuma avaliação encontrada.</p>';
+        return;
+    }
+
+    reviewsSnapshot.forEach(docSnap => {
+        const review = { id: docSnap.id, ...docSnap.data() };
+        const reviewElement = document.createElement('div');
+        reviewElement.classList.add('user-item');
+        reviewElement.innerHTML = `
+            <p><strong>Usuário:</strong> ${review.userName} (${review.rating}/5)</p>
+            <p><strong>Data:</strong> ${new Date(review.createdAt.seconds * 1000).toLocaleString()}</p>
+            <p><strong>Comentário:</strong> ${review.comment}</p>
+            <p><small>ID do Doce: ${review.sweetId}</small></p>
+            <button class="delete-review-btn" data-id="${review.id}">Excluir Avaliação</button>
+        `;
+        reviewsListAdmin.appendChild(reviewElement);
+    });
+
+    document.querySelectorAll('.delete-review-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const reviewId = e.target.dataset.id;
+            if (confirm("Tem certeza que deseja excluir esta avaliação?")) {
+                try {
+                    await deleteDoc(doc(db, "reviews", reviewId));
+                    alert("Avaliação excluída com sucesso!");
+                    fetchAndRenderReviews();
+                } catch (error) {
+                    console.error("Erro ao excluir avaliação: ", error);
+                    alert("Falha ao excluir a avaliação.");
+                }
+            }
+        });
+    });
+}
+
+
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const userDocRef = doc(db, "users", user.uid);
@@ -224,7 +268,8 @@ onAuthStateChanged(auth, async (user) => {
             fetchUsers();
             fetchOrders();
             fetchContacts();
-            fetchAndRenderSweets(); 
+            fetchAndRenderSweets();
+            fetchAndRenderReviews();
         } else {
             alert("Acesso negado. Você não é um administrador.");
             window.location.href = "index.html";

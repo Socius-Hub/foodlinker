@@ -1,5 +1,5 @@
-import { db } from './firebase-config.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { auth, db } from './firebase-config.js';
+import { collection, getDocs, query, where, orderBy, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 console.log("main.js foi carregado com sucesso.");
 
@@ -48,15 +48,36 @@ function addToCart(sweetId) {
     quantityInput.value = 1;
 }
 
-function addEventListenersToButtons() {
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const sweetId = button.dataset.id;
-            addToCart(sweetId);
+async function fetchReviewsForSweet(sweetId) {
+    const reviewsContainer = document.getElementById(`reviews-${sweetId}`);
+    if (!reviewsContainer) return;
+
+    const q = query(collection(db, "reviews"), where("sweetId", "==", sweetId), orderBy("createdAt", "desc"));
+
+    try {
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            reviewsContainer.innerHTML = "<p>Nenhuma avaliação ainda.</p>";
+            return;
+        }
+
+        let reviewsHtml = '<h4>Avaliações:</h4>';
+        querySnapshot.forEach(doc => {
+            const review = doc.data();
+            reviewsHtml += `
+                <div class="review-item">
+                    <p><strong>${review.userName} (${review.rating}/5):</strong></p>
+                    <p>${review.comment}</p>
+                </div>
+            `;
         });
-    });
+        reviewsContainer.innerHTML = reviewsHtml;
+    } catch (error) {
+        console.error("Erro ao buscar avaliações: ", error);
+        reviewsContainer.innerHTML = "<p>Erro ao carregar avaliações.</p>";
+    }
 }
+
 
 function renderSweets(sweets) {
     sweetsContainer.innerHTML = '';
@@ -79,11 +100,37 @@ function renderSweets(sweets) {
                 </div>
                 <button class="add-to-cart-btn" data-id="${sweet.id}">Adicionar</button>
             </div>
+            <div class="reviews-section" id="reviews-${sweet.id}">
+                <p>Carregando avaliações...</p>
+            </div>
+            <form class="review-form" data-id="${sweet.id}">
+                <h4>Deixe sua avaliação:</h4>
+                <select name="rating" required>
+                    <option value="" disabled selected>Nota</option>
+                    <option value="5">5 Estrelas</option>
+                    <option value="4">4 Estrelas</option>
+                    <option value="3">3 Estrelas</option>
+                    <option value="2">2 Estrelas</option>
+                    <option value="1">1 Estrela</option>
+                </select>
+                <textarea name="comment" placeholder="Seu comentário..." required></textarea>
+                <button type="submit">Enviar Avaliação</button>
+            </form>
         `;
         sweetsContainer.appendChild(sweetElement);
+        fetchReviewsForSweet(sweet.id);
     });
-
     addEventListenersToButtons();
+}
+
+function addEventListenersToButtons() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const sweetId = button.dataset.id;
+            addToCart(sweetId);
+        });
+    });
 }
 
 async function fetchSweets() {
@@ -133,5 +180,48 @@ function applyFilters() {
 searchName.addEventListener('input', applyFilters);
 searchCategory.addEventListener('change', applyFilters);
 sortByPrice.addEventListener('change', applyFilters);
+
+sweetsContainer.addEventListener('submit', async (e) => {
+    if (e.target.classList.contains('review-form')) {
+        e.preventDefault();
+        
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Você precisa estar logado para avaliar um produto.");
+            window.location.href = '/login';
+            return;
+        }
+
+        const sweetId = e.target.dataset.id;
+        const rating = e.target.rating.value;
+        const comment = e.target.comment.value;
+
+        if (!rating || !comment) {
+            alert("Por favor, preencha a nota e o comentário.");
+            return;
+        }
+
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        const userName = userDoc.exists() ? userDoc.data().fullName : user.displayName;
+
+        try {
+            await addDoc(collection(db, "reviews"), {
+                sweetId: sweetId,
+                userId: user.uid,
+                userName: userName,
+                rating: Number(rating),
+                comment: comment,
+                createdAt: serverTimestamp()
+            });
+            alert("Avaliação enviada com sucesso!");
+            e.target.reset();
+            fetchReviewsForSweet(sweetId);
+        } catch (error) {
+            console.error("Erro ao enviar avaliação: ", error);
+            alert("Falha ao enviar avaliação.");
+        }
+    }
+});
 
 fetchSweets();

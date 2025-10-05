@@ -6,6 +6,7 @@
     <title>Painel do Admin</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/jpeg" href="img/icon.jpg">
+
     <link rel="apple-touch-icon" href="img/icon.jpg">
     <style>
         #edit-sweet-modal {
@@ -32,15 +33,17 @@
 </head>
 <body class="admin-body">
     <header>
-        <h1>Painel do Administrador</h1>
+        <div class="admin-header-left">
+            <h1>Painel do Administrador</h1>
+            <button class="menu-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
         <nav>
             <a href="index.html">Ver Site</a>
         </nav>
-        <button class="menu-toggle">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
     </header>
     <main id="admin-panel" style="display: none;">
         <div class="admin-tabs">

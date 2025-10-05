@@ -90,20 +90,12 @@ footer {
     color: var(--cor-branco);
 }
 
-#login-container, #register-container, #contact-form {
+#login-container, #register-container, #contact-form, #admin-panel {
     background: var(--cor-branco);
     padding: 2rem;
     border-radius: 10px;
     box-shadow: var(--sombra-padrao);
     max-width: 500px;
-    margin: 2rem auto;
-}
-
-#admin-panel {
-    background: var(--cor-branco);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: var(--sombra-padrao);
     margin: 2rem auto;
 }
 
@@ -397,14 +389,6 @@ button:hover {
     text-align: right;
 }
 
-.admin-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #ddd;
-    flex-wrap: wrap;
-}
-
 .tab-button {
     padding: 10px 20px;
     cursor: pointer;
@@ -428,6 +412,17 @@ button:hover {
 .tab-content.active {
     display: block;
 }
+
+.auth-container .tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 1rem; 
+}
+
+.auth-container .tab-content.active {
+    display: flex;
+}
+
 
 .sweet-card .price {
     padding: 0.5rem 1rem;
@@ -592,68 +587,11 @@ button:hover {
     box-shadow: var(--sombra-padrao);
     max-width: 500px;
     margin: 2rem auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
 }
 
 .auth-tabs {
     display: flex;
     border-bottom: 2px solid #eee;
-}
-
-.tab-button {
-    flex-grow: 1;
-    text-align: center;
-    padding: 1rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    color: #888;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.tab-button.active {
-    color: var(--cor-primaria);
-    border-bottom-color: var(--cor-primaria);
-}
-
-.auth-container .tab-content {
-    display: none;
-    flex-direction: column;
-    gap: 1rem; 
-}
-
-.auth-container .tab-content.active {
-    display: flex;
-}
-
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-.menu-toggle .bar {
-    display: block;
-    width: 25px;
-    height: 3px;
-    margin: 5px auto;
-    background-color: var(--cor-primaria);
-    transition: all 0.3s ease-in-out;
-}
-
-.menu-toggle.is-active .bar:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-}
-.menu-toggle.is-active .bar:nth-child(2) {
-    opacity: 0;
-}
-.menu-toggle.is-active .bar:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
 }
 
 .modal-overlay {
@@ -769,15 +707,59 @@ button:hover {
     transform: none;
 }
 
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.menu-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--cor-primaria);
+    transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle.is-active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-toggle.is-active .bar:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle.is-active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+
+.admin-body header {
+    align-items: flex-start;
+}
+
+.admin-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.admin-header-left h1 {
+    margin-bottom: 0;
+}
+
 .admin-body .menu-toggle {
     display: block;
+    margin: 0;
 }
 
 .admin-body .admin-tabs {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 70%;
+    width: 90%;
     max-width: 300px;
     height: 100vh;
     background-color: var(--cor-fundo);
@@ -805,10 +787,11 @@ button:hover {
 
 
 @media (min-width: 769px) {
-    .admin-body .admin-tabs {
+    .admin-body header nav {
         display: flex;
     }
 }
+
 
 @media (max-width: 768px) {
     main {
@@ -827,7 +810,7 @@ button:hover {
         display: block;
     }
 
-    header nav {
+    body:not(.admin-body) header nav {
         position: fixed;
         top: 0;
         right: -100%;
@@ -843,7 +826,7 @@ button:hover {
         transition: right 0.3s ease-in-out;
     }
 
-    header nav.is-active {
+    body:not(.admin-body) header nav.is-active {
         right: 0;
     }
 
@@ -858,18 +841,5 @@ button:hover {
 
     .welcome-content {
         text-align: center;
-    }
-
-    .admin-tabs:not(.is-active) {
-       display: none;
-    }
-
-    .admin-body .admin-tabs {
-       display: flex;
-       left: -100%;
-    }
-    
-    .admin-body .admin-tabs.is-active {
-        left: 0;
     }
 }

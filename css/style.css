@@ -734,11 +734,6 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-.admin-body header {
-    align-items: center;
-    justify-content: space-between;
-}
-
 .admin-body .admin-header-left {
     display: flex;
     flex-direction: column;
@@ -751,20 +746,8 @@ button:hover {
 }
 
 .admin-body .menu-toggle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1002;
-    background-color: white;
-    padding: 12px;
-    border-radius: 50%;
-    box-shadow: var(--sombra-padrao);
-    width: 50px;
-    height: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: block;
+    margin: 0;
 }
 
 .admin-body .admin-tabs {
@@ -798,21 +781,6 @@ button:hover {
     flex-grow: 0;
 }
 
-
-@media (min-width: 600px) {
-    #filters {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-around;
-    }
-
-    #filters input[type="text"], #filters select {
-        flex: 1;
-        min-width: 150px;
-    }
-}
-
 @media (min-width: 900px) {
     #sweets-container {
         grid-template-columns: repeat(3, 1fr); 
@@ -822,9 +790,6 @@ button:hover {
 @media (min-width: 769px) {
    body:not(.admin-body) .menu-toggle {
        display: none;
-   }
-   .admin-body .admin-header-left {
-       display: block;
    }
 }
 
@@ -839,15 +804,7 @@ button:hover {
     }
     
     .admin-body header {
-        justify-content: center;
-    }
-    
-    .admin-body header nav {
-        display: none;
-    }
-    
-    .admin-body .admin-header-left {
-        display: none;
+        align-items: center;
     }
 
     header h1 {

@@ -253,6 +253,41 @@ button:hover {
     font-size: 1rem;
 }
 
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    color: #ddd;
+    font-size: 2rem;
+}
+
+.star-rating .star {
+    transition: color 0.2s;
+}
+
+.star-rating.display-only {
+    flex-direction: row;
+    justify-content: flex-start;
+    font-size: 1.2rem;
+}
+
+.star-rating.display-only .star.filled {
+    color: #ffc107;
+}
+
+.star-rating:not(.display-only) .star {
+    cursor: pointer;
+}
+
+.star-rating:not(.display-only) .star:hover,
+.star-rating:not(.display-only) .star:hover ~ .star {
+    color: #ffc107;
+}
+
+.star-rating .star.selected {
+    color: #ffc107;
+}
+
 
 #login-container, #register-container {
     margin-top: 1rem;

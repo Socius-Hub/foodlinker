@@ -48,6 +48,43 @@ function addToCart(sweetId) {
     quantityInput.value = 1;
 }
 
+function renderStars(rating, isDisplayOnly = true) {
+    const totalStars = 5;
+    let starsHtml = `<div class="star-rating ${isDisplayOnly ? 'display-only' : ''}" data-rating="${Math.round(rating)}">`;
+    for (let i = totalStars; i >= 1; i--) {
+        const isFilled = i <= Math.round(rating);
+        starsHtml += `<span class="star ${isFilled ? 'filled' : ''}" data-value="${i}">&#9733;</span>`;
+    }
+    starsHtml += '</div>';
+    return starsHtml;
+}
+
+async function checkIfUserPurchasedItem(userId, sweetId) {
+    if (!userId) return false;
+    const ordersRef = collection(db, "orders");
+    const q = query(ordersRef, where("userId", "==", userId), where("status", "==", "Concluído"));
+    
+    try {
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            return false;
+        }
+
+        let purchased = false;
+        querySnapshot.forEach(doc => {
+            const order = doc.data();
+            if (order.items && order.items.some(item => item.sweetId === sweetId)) {
+                purchased = true;
+            }
+        });
+        return purchased;
+    } catch (error) {
+        console.error("Erro ao verificar histórico de compras:", error);
+        return false;
+    }
+}
+
+
 async function fetchReviewsForSweet(sweetId) {
     const reviewsContainer = document.getElementById(`reviews-${sweetId}`);
     if (!reviewsContainer) return;
@@ -56,21 +93,34 @@ async function fetchReviewsForSweet(sweetId) {
 
     try {
         const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            reviewsContainer.innerHTML = "<p>Nenhuma avaliação ainda.</p>";
-            return;
-        }
-
-        let reviewsHtml = '<h4>Avaliações:</h4>';
+        
+        let totalRating = 0;
+        const reviews = [];
         querySnapshot.forEach(doc => {
             const review = doc.data();
-            reviewsHtml += `
-                <div class="review-item">
-                    <p><strong>${review.userName} (${review.rating}/5):</strong></p>
-                    <p>${review.comment}</p>
-                </div>
-            `;
+            reviews.push(review);
+            totalRating += review.rating;
         });
+        
+        const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+        const reviewCount = reviews.length;
+
+        let reviewsHtml = `<h4>Avaliações (${reviewCount})</h4>`;
+        reviewsHtml += renderStars(averageRating, true);
+
+        if (reviewCount === 0) {
+            reviewsHtml += "<p>Nenhuma avaliação ainda.</p>";
+        } else {
+            reviews.forEach(review => {
+                reviewsHtml += `
+                    <div class="review-item">
+                        <p><strong>${review.userName}</strong></p>
+                        ${renderStars(review.rating, true)}
+                        <p>${review.comment}</p>
+                    </div>
+                `;
+            });
+        }
         reviewsContainer.innerHTML = reviewsHtml;
     } catch (error) {
         console.error("Erro ao buscar avaliações: ", error);
@@ -79,15 +129,34 @@ async function fetchReviewsForSweet(sweetId) {
 }
 
 
-function renderSweets(sweets) {
+async function renderSweets(sweets) {
     sweetsContainer.innerHTML = '';
     if (sweets.length === 0) {
         sweetsContainer.innerHTML = '<p>Nenhum doce encontrado com estes critérios.</p>';
         return;
     }
-    sweets.forEach(sweet => {
+
+    const currentUser = auth.currentUser;
+
+    for (const sweet of sweets) {
         const sweetElement = document.createElement('div');
         sweetElement.classList.add('sweet-card');
+        
+        let reviewFormHtml = '';
+        if (currentUser) {
+            const hasPurchased = await checkIfUserPurchasedItem(currentUser.uid, sweet.id);
+            if (hasPurchased) {
+                reviewFormHtml = `
+                    <form class="review-form" data-id="${sweet.id}">
+                        <h4>Deixe sua avaliação:</h4>
+                        ${renderStars(0, false)}
+                        <textarea name="comment" placeholder="Seu comentário..." required></textarea>
+                        <button type="submit">Enviar Avaliação</button>
+                    </form>
+                `;
+            }
+        }
+
         sweetElement.innerHTML = `
             <img src="${sweet.imageUrl}" alt="${sweet.name}">
             <h3>${sweet.name}</h3>
@@ -103,24 +172,14 @@ function renderSweets(sweets) {
             <div class="reviews-section" id="reviews-${sweet.id}">
                 <p>Carregando avaliações...</p>
             </div>
-            <form class="review-form" data-id="${sweet.id}">
-                <h4>Deixe sua avaliação:</h4>
-                <select name="rating" required>
-                    <option value="" disabled selected>Nota</option>
-                    <option value="5">5 Estrelas</option>
-                    <option value="4">4 Estrelas</option>
-                    <option value="3">3 Estrelas</option>
-                    <option value="2">2 Estrelas</option>
-                    <option value="1">1 Estrela</option>
-                </select>
-                <textarea name="comment" placeholder="Seu comentário..." required></textarea>
-                <button type="submit">Enviar Avaliação</button>
-            </form>
+            ${reviewFormHtml}
         `;
         sweetsContainer.appendChild(sweetElement);
         fetchReviewsForSweet(sweet.id);
-    });
+    }
+    
     addEventListenersToButtons();
+    addEventListenersToStars();
 }
 
 function addEventListenersToButtons() {
@@ -133,12 +192,29 @@ function addEventListenersToButtons() {
     });
 }
 
+function addEventListenersToStars() {
+    const starRatings = document.querySelectorAll('.review-form .star-rating');
+    starRatings.forEach(ratingGroup => {
+        const stars = ratingGroup.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const ratingValue = star.dataset.value;
+                ratingGroup.dataset.rating = ratingValue; 
+                stars.forEach(s => {
+                    s.classList.toggle('selected', s.dataset.value <= ratingValue);
+                });
+            });
+        });
+    });
+}
+
+
 async function fetchSweets() {
     try {
         const sweetsCollection = collection(db, 'sweets');
         const sweetsSnapshot = await getDocs(sweetsCollection);
         allSweets = sweetsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderSweets(allSweets);
+        await renderSweets(allSweets);
         populateCategories();
     } catch (error) {
         console.error("Erro ao buscar os doces:", error);
@@ -193,11 +269,12 @@ sweetsContainer.addEventListener('submit', async (e) => {
         }
 
         const sweetId = e.target.dataset.id;
-        const rating = e.target.rating.value;
-        const comment = e.target.comment.value;
+        const starRatingDiv = e.target.querySelector('.star-rating');
+        const rating = starRatingDiv.dataset.rating;
+        const comment = e.target.querySelector('textarea[name="comment"]').value;
 
-        if (!rating || !comment) {
-            alert("Por favor, preencha a nota e o comentário.");
+        if (rating === "0" || !comment) {
+            alert("Por favor, selecione uma nota clicando nas estrelas e escreva um comentário.");
             return;
         }
 
@@ -216,6 +293,8 @@ sweetsContainer.addEventListener('submit', async (e) => {
             });
             alert("Avaliação enviada com sucesso!");
             e.target.reset();
+            starRatingDiv.dataset.rating = "0";
+            starRatingDiv.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
             fetchReviewsForSweet(sweetId);
         } catch (error) {
             console.error("Erro ao enviar avaliação: ", error);

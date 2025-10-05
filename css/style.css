@@ -734,20 +734,11 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-.admin-body .admin-header-left {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-}
-
-.admin-body .admin-header-left h1 {
-    margin-bottom: 0;
-}
-
 .admin-body .menu-toggle {
     display: block;
-    margin: 0;
+    margin-left: 2rem; 
+    margin-top: 1rem;
+    align-self: flex-start;
 }
 
 .admin-body .admin-tabs {
@@ -803,8 +794,8 @@ button:hover {
         padding: 1rem;
     }
     
-    .admin-body header {
-        align-items: center;
+    .admin-body .menu-toggle {
+        margin-left: 1rem;
     }
 
     header h1 {

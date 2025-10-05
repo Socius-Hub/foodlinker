@@ -77,6 +77,7 @@ header h1 {
 header nav {
     display: flex;
     gap: 1.5rem;
+    align-items: center;
 }
 
 header nav a {
@@ -779,6 +780,50 @@ button:hover {
     flex-grow: 0;
 }
 
+.cart-nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: var(--cor-primaria);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+#mobile-cart-fab {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--cor-primaria);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    justify-content: center;
+    align-items: center;
+    z-index: 998;
+    color: white;
+}
+
+#mobile-cart-fab .cart-badge {
+    top: -5px;
+    right: -5px;
+}
+
+
 @media (min-width: 900px) {
     #sweets-container {
         grid-template-columns: repeat(3, 1fr); 
@@ -835,6 +880,14 @@ button:hover {
 
     header nav a {
         font-size: 1.2rem;
+    }
+    
+    .cart-nav-link {
+        display: none; /* Esconde o link "Carrinho" do menu principal no mobile */
+    }
+
+    #mobile-cart-fab {
+        display: flex; /* Mostra o botão flutuante no mobile */
     }
 
     .welcome-section {

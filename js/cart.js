@@ -46,6 +46,7 @@ async function proceedToCheckout(userPhone) {
         });
         alert("Pedido realizado com sucesso!");
         localStorage.removeItem('cart');
+        window.dispatchEvent(new Event('cartUpdated')); // Avisa que o carrinho mudou
         window.location.href = "/pedidos"; 
     } catch (error) {
         console.error("Erro ao finalizar pedido: ", error);
@@ -128,7 +129,11 @@ checkoutButton.addEventListener('click', async () => {
 });
 
 function getCart() { return JSON.parse(localStorage.getItem('cart')) || []; }
-function saveCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); renderCart(); }
+function saveCart(cart) { 
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated')); // Avisa que o carrinho mudou
+    renderCart(); 
+}
 
 function updateQuantity(sweetId, newQuantity) {
     const cart = getCart();

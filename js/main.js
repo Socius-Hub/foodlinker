@@ -16,6 +16,7 @@ function getCart() {
 
 function saveCart(cart) {
     localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated')); // Avisa que o carrinho mudou
 }
 
 function addToCart(sweetId) {

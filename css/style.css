@@ -715,6 +715,7 @@ button:hover {
     border: none;
     cursor: pointer;
     z-index: 1001;
+    padding: 8px;
 }
 
 .menu-toggle .bar {
@@ -736,14 +737,14 @@ button:hover {
     transform: translateY(-8px) rotate(-45deg);
 }
 
+.admin-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .admin-body .menu-toggle {
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    z-index: 1002; 
     display: block;
-    width: 50px;
-    height: 50px;
 }
 
 .admin-body .admin-tabs {
@@ -841,19 +842,6 @@ button:hover {
 
     header {
         padding: 1rem;
-    }
-    
-    .admin-body .menu-toggle {
-        left: 1rem;
-        top: 15px;
-    }
-    
-    .admin-body header {
-        justify-content: center;
-    }
-    
-    .admin-body header nav {
-        display: none;
     }
 
     header h1 {
